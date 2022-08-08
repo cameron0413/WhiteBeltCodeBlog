@@ -10,5 +10,13 @@ namespace WhiteBeltCodeBlog.Data
             : base(options)
         {
         }
+
+        public virtual DbSet<BlogPost> BlogPosts { get; set; }
+        public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<Comment> Comments { get; set; }
+        public virtual DbSet<Tag> Tags { get; set; }
+
+
+
     }
 }

@@ -31,5 +31,10 @@ namespace WhiteBeltCodeBlog.Models
         public virtual IFormFile? ImageFile { get; set; }
 
         //Navigation Properties
+
+        public virtual ICollection<BlogPost> BlogPosts { get; set; } = new HashSet<BlogPost>();
+        public virtual ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
+        public virtual ICollection<Category> Categories { get; set; } = new HashSet<Category>();
+
     }
 }
