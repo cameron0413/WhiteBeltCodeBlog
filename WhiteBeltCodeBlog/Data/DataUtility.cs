@@ -61,7 +61,7 @@ namespace WhiteBeltCodeBlog.Data
             await SeedRolesAsync(roleManagerSvc);
 
             // Seed Users
-            await SeedUsersAsync(dbContextSvc, configurationSvc, userManagerSvc);
+            await SeedUsersAsync(dbContextSvc, userManagerSvc);
 
         }
 
