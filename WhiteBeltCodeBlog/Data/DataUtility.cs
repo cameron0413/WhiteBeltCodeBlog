@@ -13,6 +13,11 @@ namespace WhiteBeltCodeBlog.Data
         private const string _modRole = "Moderator";
 
 
+        public static DateTime GetPostgresDate(DateTime datetime)
+        {
+            return DateTime.SpecifyKind(datetime, DateTimeKind.Utc);
+        }
+
 
         public static string GetConnectionString(IConfiguration configuration)
         {
@@ -61,7 +66,7 @@ namespace WhiteBeltCodeBlog.Data
             await SeedRolesAsync(roleManagerSvc);
 
             // Seed Users
-            await SeedUsersAsync(dbContextSvc, userManagerSvc);
+            await SeedUsersAsync(dbContextSvc, configurationSvc, userManagerSvc);
 
         }
 
@@ -77,7 +82,7 @@ namespace WhiteBeltCodeBlog.Data
             }
         }
 
-        private static async Task SeedUsersAsync(ApplicationDbContext context, UserManager<BlogUser> userManager)
+        private static async Task SeedUsersAsync(ApplicationDbContext context, IConfiguration configuration, UserManager<BlogUser> userManager)
         {
             if(!context.Users.Any(u => u.Email == _adminEmail))
             {

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using WhiteBeltCodeBlog.Enums;
 
@@ -26,7 +27,10 @@ namespace WhiteBeltCodeBlog.Models
         [DataType(DataType.Date)]
         public DateTime? LastUpdated { get; set; }
 
-        public BlogPostStatus BlogPostStatus { get; set; }
+        //public BlogPostStatus BlogPostStatus { get; set; }
+
+        [DisplayName("Published")]
+        public bool IsPublished { get; set; }
 
         public string? Slug { get; set; }
         //The slug, aside from being a garden pest, is a mask we use for the user to make the URL look human-readable.

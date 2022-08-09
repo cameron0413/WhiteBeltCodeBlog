@@ -180,9 +180,6 @@ namespace WhiteBeltCodeBlog.data.migrations
                     b.Property<string>("Abstract")
                         .HasColumnType("text");
 
-                    b.Property<int>("BlogPostStatus")
-                        .HasColumnType("integer");
-
                     b.Property<string>("BlogUserId")
                         .HasColumnType("text");
 
@@ -203,6 +200,9 @@ namespace WhiteBeltCodeBlog.data.migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsPublished")
                         .HasColumnType("boolean");
 
                     b.Property<DateTime?>("LastUpdated")

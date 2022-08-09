@@ -6,10 +6,11 @@ using WhiteBeltCodeBlog.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = DataUtility.GetConnectionString(builder.Configuration);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
+
 //later on, we will add "split queries" here. Ask Antonio what that means.
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -24,6 +25,8 @@ builder.Services.AddMvc();
 //Why don't we just always use AddMvc()?
 
 var app = builder.Build();
+var scope = app.Services.CreateScope();
+await DataUtility.SeedDataAsync(scope.ServiceProvider);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
