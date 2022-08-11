@@ -12,7 +12,7 @@ namespace WhiteBeltCodeBlog.Extensions
 
 
             // Remove all special characters from the string.
-            output = Regex.Replace(output, @"[A-Za-Z0-9\s-]", "");
+            output = Regex.Replace(output, @"[a-zA-Z0-9\s-]", "");
 
             // Remove all additional spaces in favor of just one
             output = Regex.Replace(output, @"\s+", " ").Trim();

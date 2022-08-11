@@ -91,7 +91,9 @@ namespace WhiteBeltCodeBlog.Controllers
                     ViewData["TagList"] = new MultiSelectList(_context.Tags, "Id", "Name", blogPost.Tags);
                     return View(blogPost);
                 }
+
                 blogPost.Slug = blogPost.Title!.Sluggify();
+                
                 //Image
                 if (blogPost.BlogPostImage != null)
                 {
