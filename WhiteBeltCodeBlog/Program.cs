@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using WhiteBeltCodeBlog.Models;
 using Microsoft.EntityFrameworkCore;
 using WhiteBeltCodeBlog.Data;
+using WhiteBeltCodeBlog.Services.Interfaces;
+using WhiteBeltCodeBlog.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,10 @@ builder.Services.AddIdentity<BlogUser, IdentityRole>(options => options.SignIn.R
                 .AddDefaultUI()
                 .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+// Custom Service
+builder.Services.AddScoped<IImageService,ImageService>();
+builder.Services.AddScoped<IBlogPostService, BlogPostService>();
 
 
 builder.Services.AddMvc();

@@ -2,21 +2,30 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WhiteBeltCodeBlog.Data;
 using WhiteBeltCodeBlog.Models;
+using WhiteBeltCodeBlog.Services;
+using WhiteBeltCodeBlog.Services.Interfaces;
 
 namespace WhiteBeltCodeBlog.Controllers
 {
     public class CategoriesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IImageService _imageService;
+        private readonly UserManager<BlogUser> _userManager;
 
-        public CategoriesController(ApplicationDbContext context)
+        public CategoriesController(ApplicationDbContext context,
+                                    IImageService imageService,
+                                    UserManager<BlogUser> userManager)
         {
             _context = context;
+            _imageService = imageService;
+            _userManager = userManager;
         }
 
         // GET: Categories
@@ -56,10 +65,15 @@ namespace WhiteBeltCodeBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,ImageData,ImageType")] Category category)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,categoryImage")] Category category)
         {
             if (ModelState.IsValid)
             {
+                if (category.CategoryImage != null)
+                {
+                    category.ImageData = await _imageService.ConvertFileToByteArrayAsync(category.CategoryImage);
+                    category.ImageType = category.CategoryImage.ContentType;
+                }
                 _context.Add(category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -97,6 +111,8 @@ namespace WhiteBeltCodeBlog.Controllers
 
             if (ModelState.IsValid)
             {
+
+                
                 try
                 {
                     _context.Update(category);

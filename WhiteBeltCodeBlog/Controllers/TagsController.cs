@@ -2,21 +2,30 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WhiteBeltCodeBlog.Data;
 using WhiteBeltCodeBlog.Models;
+using WhiteBeltCodeBlog.Services;
+using WhiteBeltCodeBlog.Services.Interfaces;
 
 namespace WhiteBeltCodeBlog.Controllers
 {
     public class TagsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IImageService _imageService;
+        private readonly UserManager<BlogUser> _userManager;
 
-        public TagsController(ApplicationDbContext context)
+        public TagsController(ApplicationDbContext context,
+                                    IImageService imageService,
+                                    UserManager<BlogUser> userManager)
         {
             _context = context;
+            _imageService = imageService;
+            _userManager = userManager;
         }
 
         // GET: Tags

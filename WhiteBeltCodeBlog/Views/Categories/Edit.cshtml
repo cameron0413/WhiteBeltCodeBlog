@@ -4,9 +4,7 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
-<h4>Category</h4>
+<h2>Edit Category</h2>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -24,14 +22,12 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ImageData" class="control-label"></label>
-                <input asp-for="ImageData" class="form-control" />
-                <span asp-validation-for="ImageData" class="text-danger"></span>
+                <label asp-for="CategoryImage" class="control-label"></label>
+                <input type="file" asp-for="CategoryImage" class="form-control" accept=".png,.jpg,.jpeg,.gif" onchange="document.getElementById('imageData').src = window.URL.createObjectURL(this.files[0])" />
+                <span asp-validation-for="CategoryImage" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ImageType" class="control-label"></label>
-                <input asp-for="ImageType" class="form-control" />
-                <span asp-validation-for="ImageType" class="text-danger"></span>
+                <img id="imageData" class="img-fluid img-thumbnail" style="width:100px;height:80px" src="/img/DefaultBlogImage.png" />
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -45,5 +41,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }
