@@ -2,25 +2,30 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WhiteBeltCodeBlog.Data;
 using WhiteBeltCodeBlog.Models;
+using WhiteBeltCodeBlog.Services.Interfaces;
 
 namespace WhiteBeltCodeBlog.Controllers
 {
     public class CommentsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<BlogUser> _userManager;
 
-        public CommentsController(ApplicationDbContext context)
+        public CommentsController(ApplicationDbContext context,
+                                   UserManager<BlogUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        // GET: Comments
-        public async Task<IActionResult> Index()
+            // GET: Comments
+            public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Comments.Include(c => c.Author).Include(c => c.BlogPost);
             return View(await applicationDbContext.ToListAsync());
@@ -47,7 +52,7 @@ namespace WhiteBeltCodeBlog.Controllers
         }
 
         // GET: Comments/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             ViewData["AuthorId"] = new SelectList(_context.Users, "Id", "Id");
             ViewData["BlogPostId"] = new SelectList(_context.BlogPosts, "Id", "Content");
@@ -59,17 +64,20 @@ namespace WhiteBeltCodeBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,BlogPostId,AuthorId,Created,LastUpdated,UpdateReason,Body")] Comment comment)
+        public async Task<IActionResult> Create([Bind("Id,BlogPostId,AuthorId,Created,LastUpdated,UpdateReason,Body,BlogPost,Author")] Comment comment, string? slug)
         {
+            ModelState.Remove("AuthorId");
+
             if (ModelState.IsValid)
             {
+                comment.AuthorId = _userManager.GetUserId(User);
+                comment.Created = DataUtility.GetPostgresDate(DateTime.Now);
+                //DataUtility is a static class, which means that it does not need a using statement. It can be called from anywhere.
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["AuthorId"] = new SelectList(_context.Users, "Id", "Id", comment.AuthorId);
-            ViewData["BlogPostId"] = new SelectList(_context.BlogPosts, "Id", "Content", comment.BlogPostId);
-            return View(comment);
+
+            return RedirectToAction("Details", "BlogPosts", new { slug });
         }
 
         // GET: Comments/Edit/5

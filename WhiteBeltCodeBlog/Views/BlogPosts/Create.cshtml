@@ -10,14 +10,14 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Slug" class="form-control" />
             <input type="hidden" asp-for="Created" class="form-control" />
             <input type="hidden" asp-for="LastUpdated" class="form-control" />
             <input type="hidden" class="form-check-input" asp-for="IsPublished" />
             <input type="hidden" class="form-check-input" asp-for="IsDeleted" />
-           
+
             <div class="form-group">
                 <label asp-for="CategoryId" class="control-label">Category</label>
                 <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
@@ -32,15 +32,15 @@
                 <textarea asp-for="Content" class="form-control" rows="7"></textarea>
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
-           
+
             <div class="form-group">
                 <label asp-for="Abstract" class="control-label"></label>
                 <input asp-for="Abstract" class="form-control" />
                 <span asp-validation-for="Abstract" class="text-danger"></span>
             </div>
-           
+
             <div class="form-group">
-                <label asp-for="BlogPostImage" class="control-label"></label>
+                <label asp-for="BlogPostImage" class="control-label">Cover Photo</label>
                 <input type="file" asp-for="BlogPostImage" class="form-control" accept=".png,.jpg,.jpeg,.gif" onchange="document.getElementById('imageData').src = window.URL.createObjectURL(this.files[0])" />
                 <span asp-validation-for="BlogPostImage" class="text-danger"></span>
             </div>
@@ -49,7 +49,7 @@
             </div>
             <div class="col-12 col-lg-6 mt-3">
                 <label asp-for="Tags" class="form-label">Tags</label>
-                <select name="TagList" class="form-select" asp-items="ViewBag.TagList" multiple aria-label="Tags">
+                <select name="selectedTags" class="form-select" asp-items="ViewBag.TagList" multiple aria-label="Tags">
                 </select>
             </div>
             <div class="form-group">

@@ -16,7 +16,6 @@ namespace WhiteBeltCodeBlog.Services
             }
             catch (Exception)
             {
-
                 throw;
             }
 

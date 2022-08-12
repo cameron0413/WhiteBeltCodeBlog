@@ -38,21 +38,25 @@ namespace WhiteBeltCodeBlog.Controllers
         // GET: BlogPosts
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.BlogPosts.Include(b => b.Category);
+            var applicationDbContext = _context.BlogPosts.Include(b => b.Category).Include(b => b.Tags);
             return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: BlogPosts/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string? slug)
         {
-            if (id == null || _context.BlogPosts == null)
+
+            if (string.IsNullOrEmpty(slug))
             {
                 return NotFound();
             }
 
             var blogPost = await _context.BlogPosts
                 .Include(b => b.Category)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(b =>b.Comments)
+                    .ThenInclude(c =>c.Author)
+                .Include(b => b.Tags)
+                .FirstOrDefaultAsync(m => m.Slug == slug);
             if (blogPost == null)
             {
                 return NotFound();
@@ -71,12 +75,10 @@ namespace WhiteBeltCodeBlog.Controllers
         }
 
         // POST: BlogPosts/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CategoryId,Title,Content,LastUpdated,Slug,Abstract,BlogPostImage,TagList,")] BlogPost blogPost, List<int> TagList)
+        public async Task<IActionResult> Create([Bind("Id,CategoryId,Title,Content,LastUpdated,Slug,Abstract,BlogPostImage,TagList,")] BlogPost blogPost, List<int> TagList, List<int> selectedTags)
         {
             if (ModelState.IsValid)
             {
@@ -106,8 +108,13 @@ namespace WhiteBeltCodeBlog.Controllers
 
                 blogPost.Created = DataUtility.GetPostgresDate(DateTime.Now);
 
-                
 
+                
+                
+                foreach (int tagId in selectedTags)
+                {
+                    blogPost.Tags.Add(_context.Tags.Find(tagId)!);
+                }
                
 
 
@@ -125,21 +132,32 @@ namespace WhiteBeltCodeBlog.Controllers
         }
 
         // GET: BlogPosts/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, List<int> selectedTags)
         {
             if (id == null || _context.BlogPosts == null)
             {
                 return NotFound();
             }
 
-            var blogPost = await _context.BlogPosts.FindAsync(id);
+            var blogPost = await _context.BlogPosts.Include(b => b.Tags).FirstOrDefaultAsync(b => b.Id == id);
             if (blogPost == null)
             {
                 return NotFound();
             }
+
+            
+
+            blogPost.Tags.Clear();
+
+            foreach (int tagId in selectedTags)
+            {
+                blogPost.Tags.Add(_context.Tags.Find(tagId)!);
+            }
+
+
             string blogUserId = _userManager.GetUserId(User);
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
-            ViewData["TagList"] = new MultiSelectList(_context.Tags, "Id", "Name");
+            ViewData["TagList"] = new MultiSelectList(_context.Tags, "Id", "Name", selectedTags);
             return View(blogPost);
         }
 
@@ -148,7 +166,7 @@ namespace WhiteBeltCodeBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CategoryId,Title,Content,Created,LastUpdated,IsPublished,Slug,Abstract,IsDeleted,ImageData,ImageType")] BlogPost blogPost)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CategoryId,Title,Content,LastUpdated,Slug,Abstract,BlogPostImage,TagList,")] BlogPost blogPost, List<int> selectedTags)
         {
             if (id != blogPost.Id)
             {
@@ -161,8 +179,24 @@ namespace WhiteBeltCodeBlog.Controllers
                 {
                     blogPost.Created = DateTime.SpecifyKind(blogPost.Created, DateTimeKind.Utc);
                     blogPost.LastUpdated = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
+                    
+
+                    if (blogPost.BlogPostImage != null)
+                    {
+                        blogPost.ImageData = await _imageService.ConvertFileToByteArrayAsync(blogPost.BlogPostImage);
+                        blogPost.ImageType = blogPost.BlogPostImage.ContentType;
+                    }
+
                     _context.Update(blogPost);
+
+                    //Look at the edit method in the address book to see what code goes here.
+
+                    //Remove old tags
+                    List<Tag> oldTags = (await _blogPostService.GetBlogPostTagsAsync(blogPost.Id)).ToList();
+
+
                     await _context.SaveChangesAsync();
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -176,9 +210,12 @@ namespace WhiteBeltCodeBlog.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
+
+               
+
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", blogPost.CategoryId);
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", blogPost.Tags);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+            ViewData["TagList"] = new MultiSelectList(_context.Tags, "Id", "Name", selectedTags);
             return View(blogPost);
         }
 
@@ -224,5 +261,6 @@ namespace WhiteBeltCodeBlog.Controllers
         {
           return (_context.BlogPosts?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
     }
 }

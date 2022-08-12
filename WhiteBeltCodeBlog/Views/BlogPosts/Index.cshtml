@@ -39,6 +39,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Category)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tags)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -61,19 +64,21 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Abstract)
                 </td>
+                <td>
                 @if (item.ImageData != null)
                 {
                     <img src="@imageService.ConvertByteArrayToFile(item.ImageData!, item.ImageType!)" class="square-img rounded-start" style="height: 120px; width: 120px" alt="...">
                 }
-                <td>
-                    @Html.DisplayFor(modelItem => item.ImageData)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Category.Name)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => item.Tags)
+                </td>
+                <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Details" asp-route-slug="@item.Slug">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
