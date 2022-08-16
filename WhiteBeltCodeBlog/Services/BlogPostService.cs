@@ -114,6 +114,46 @@ namespace WhiteBeltCodeBlog.Services
             return blogPost.Tags.ToList();
         }
 
+        public async Task<List<Category>> GetCategoriesAsync()
+        {
+            List<Category>? categories = await _context.Categories.ToListAsync();
 
+            return categories;
+
+
+        }
+
+        public async Task<List<BlogPost>> GetAllBlogPostsAsync()
+        {
+            List<BlogPost> blogPosts = await _context.BlogPosts
+                                                 .Include(b => b.Comments)
+                                                    .ThenInclude(b =>b.Author)
+                                                 .Include(b => b.Category)
+                                                 .Include(b => b.Tags)
+                                                 .ToListAsync();
+
+            return blogPosts;
+        }
+
+        public async Task<BlogPost> GetPopularBlogPostsAsync(int count)
+        {
+            List<BlogPost> blogPosts = await _context.BlogPosts.Include(b => b.Comments).ToListAsync();
+            int mostComments = 0;
+
+            for (int i = 0; i < blogPosts.Count; i++)
+            {
+                int commentsNumber = blogPosts[i].Comments.Count;
+
+                if (commentsNumber > mostComments)
+                {
+                    mostComments = commentsNumber;
+                }
+            }
+        }
+
+        public async Task<BlogPost> GetRecentBlogPostsAsync(int count)
+        {
+
+        }
     }
 }

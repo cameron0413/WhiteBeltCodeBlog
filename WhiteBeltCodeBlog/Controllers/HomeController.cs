@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using WhiteBeltCodeBlog.Data;
 using WhiteBeltCodeBlog.Models;
@@ -15,6 +16,19 @@ namespace WhiteBeltCodeBlog.Controllers
         {
             _logger = logger;
             _context = context;
+        }
+
+        public async Task<IActionResult> AuthorPage()
+        {
+            //To Do: Create Service to get blogposts
+
+            List<BlogPost> posts = await _context.BlogPosts
+                                                 .Include(b =>b.Comments)
+                                                 .Include(b=>b.Category)
+                                                 .Include(b =>b.Tags)
+                                                 .ToListAsync();
+
+            return View(posts);
         }
 
         public IActionResult Index()
