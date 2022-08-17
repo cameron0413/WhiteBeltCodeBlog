@@ -156,10 +156,10 @@
                             </form>
                             <div class="mobile-search-wrapper d-sm-none d-block">
                                 <button class="search-button-toggle"><i class="fal fa-search"></i></button>
-                                <form class="header-search-form">
+                                <form class="header-search-form" asp-controller="BlogPosts" asp-action="SearchIndex">
                                     <div class="axil-search form-group">
                                         <button type="submit" class="search-button"><i class="fal fa-search"></i></button>
-                                        <input type="text" class="form-control" placeholder="Search">
+                                        <input type="text" class="form-control" placeholder="Search" name="searchTerm" id="searchTerm">
                                     </div>
                                 </form>
                             </div>
