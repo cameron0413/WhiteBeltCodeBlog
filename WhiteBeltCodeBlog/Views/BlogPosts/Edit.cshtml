@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Edit";
+    Layout = null;
 }
 
 <h1>Edit</h1>
@@ -12,11 +13,12 @@
     <div class="col-md-4">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Slug" class="form-control" />
-            <input type="hidden" asp-for="Created" class="form-control" />
-            <input type="hidden" asp-for="LastUpdated" class="form-control" />
-            <input type="hidden" class="form-check-input" asp-for="IsPublished" />
-            <input type="hidden" class="form-check-input" asp-for="IsDeleted" />
+            <input type="hidden" asp-for="Slug" />
+            <input type="hidden" asp-for="ImageData" />
+            <input type="hidden" asp-for="ImageType" />
+            <input type="hidden" asp-for="Created" />
+            <input type="hidden" asp-for="LastUpdated" />
+            <input type="hidden" asp-for="IsDeleted" />
 
             <div class="form-group">
                 <label asp-for="CategoryId" class="control-label">Category</label>
@@ -38,7 +40,10 @@
                 <input asp-for="Abstract" class="form-control" />
                 <span asp-validation-for="Abstract" class="text-danger"></span>
             </div>
-
+            <div class="form-group">
+                <label asp-for="IsPublished" class="control-label">Published</label>
+            <input class="form-check-input" asp-for="IsPublished" />
+            </div>
             <div class="form-group">
                 <label asp-for="BlogPostImage" class="control-label">Cover Photo</label>
                 <input type="file" asp-for="BlogPostImage" class="form-control" accept=".png,.jpg,.jpeg,.gif" onchange="document.getElementById('imageData').src = window.URL.createObjectURL(this.files[0])" />

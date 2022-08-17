@@ -126,8 +126,9 @@ namespace WhiteBeltCodeBlog.Services
         public async Task<List<BlogPost>> GetAllBlogPostsAsync()
         {
             List<BlogPost> blogPosts = await _context.BlogPosts
+                                                 .Where(b => b.IsDeleted == false)
                                                  .Include(b => b.Comments)
-                                                    .ThenInclude(b =>b.Author)
+                                                    .ThenInclude(b => b.Author)
                                                  .Include(b => b.Category)
                                                  .Include(b => b.Tags)
                                                  .ToListAsync();
@@ -135,25 +136,98 @@ namespace WhiteBeltCodeBlog.Services
             return blogPosts;
         }
 
-        public async Task<BlogPost> GetPopularBlogPostsAsync(int count)
+        public async Task<List<BlogPost>> GetPopularBlogPostsAsync(int count)
         {
-            List<BlogPost> blogPosts = await _context.BlogPosts.Include(b => b.Comments).ToListAsync();
-            int mostComments = 0;
+            List<BlogPost> blogPosts = await _context.BlogPosts
+                                                     .OrderByDescending(b => b.Comments.Count)
+                                                     .Take(count)
+                                                     .ToListAsync();
 
-            for (int i = 0; i < blogPosts.Count; i++)
+
+            return blogPosts;
+        }
+
+        public async Task<List<BlogPost>> GetRecentBlogPostsAsync(int count)
+        {
+            List<BlogPost> blogPosts = await _context.BlogPosts
+                                                     .OrderByDescending(b => b.Created)
+                                                     .Take(count)
+                                                     .ToListAsync();
+
+
+
+            return blogPosts;
+        }
+
+        public IEnumerable<BlogPost> Search(string searchString)
+        {
+            try
             {
-                int commentsNumber = blogPosts[i].Comments.Count;
+                IEnumerable<BlogPost> blogPosts = new List<BlogPost>();
 
-                if (commentsNumber > mostComments)
+                if (string.IsNullOrWhiteSpace(searchString))
                 {
-                    mostComments = commentsNumber;
+                    return blogPosts;
                 }
+                else
+                {
+                    searchString = searchString.Trim().ToLower();
+
+                    blogPosts = _context.BlogPosts.Where(b => b.Title!.ToLower().Contains(searchString) ||
+                                                              b.Abstract!.ToLower().Contains(searchString) ||
+                                                              b.Content!.ToLower().Contains(searchString) ||
+                                                              b.Category!.Name!.ToLower().Contains(searchString) ||
+                                                              b.Comments.Any(
+                                                                  c => c.Body!.ToLower().Contains(searchString) ||
+                                                                      c.Author!.FirstName!.ToLower().Contains(searchString) ||
+                                                                      c.Author!.LastName!.ToLower().Contains(searchString)) ||
+                                                              b.Tags.Any(
+                                                                  t => t.Name!.ToLower().Contains(searchString)))
+                                                  .Include(b => b.Comments)
+                                                    .ThenInclude(c => c.Author)
+                                                  .Include(b => b.Category)
+                                                  .Include(b => b.Tags)
+                                                  .Where(b => b.IsDeleted == false && b.IsPublished == true)
+                                                  .AsNoTracking()
+                                                  .OrderByDescending(b=>b.Created)
+                                                  .AsEnumerable();
+
+                    return blogPosts;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
 
-        public async Task<BlogPost> GetRecentBlogPostsAsync(int count)
-        {
 
-        }
+        ///////////////////////////         Below are the commented-out methods that return lists               //////////////////////////////
+
+
+
+
+
+        //public async Task<BlogPost> GetPopularBlogPostsAsync(int count)
+        //{
+        //    List<BlogPost> mostPopular = await _context.BlogPosts.OrderByDescending(b => b.Comments)
+        //                                                       .Take(count)
+        //                                                       .ToListAsync();
+
+
+        //    return blogPosts;
+        //}
+
+        //// Also write theae as functions that return lists
+        //public async Task<BlogPost> GetRecentBlogPostsAsync(int count)
+        //{
+        //    List<BlogPost> blogPosts = await _context.BlogPosts
+        //                                             .OrderByDescending(b => b.Created)
+        //                                             .Take(count)
+        //                                             .ToListAsync();
+
+        //    return blogPosts;
+        //}
     }
 }

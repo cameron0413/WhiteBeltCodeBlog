@@ -13,6 +13,7 @@ using WhiteBeltCodeBlog.Extensions;
 using WhiteBeltCodeBlog.Models;
 using WhiteBeltCodeBlog.Services;
 using WhiteBeltCodeBlog.Services.Interfaces;
+using X.PagedList;
 
 namespace WhiteBeltCodeBlog.Controllers
 {
@@ -40,6 +41,19 @@ namespace WhiteBeltCodeBlog.Controllers
         {
             var applicationDbContext = _context.BlogPosts.Include(b => b.Category).Include(b => b.Tags);
             return View(await applicationDbContext.ToListAsync());
+        }
+
+
+        public async Task<IActionResult> SearchIndex(string searchTerm, int? pageNum)
+        {
+            int pageSize = 4;
+            int page = pageNum ?? 1; //The double question mark is a null-coalescing operator
+
+            ViewData["searchTerm"] = searchTerm;
+
+            IPagedList<BlogPost> blogPosts = await _blogPostService.Search(searchTerm).ToPagedListAsync(page, pageSize);
+
+            return View(blogPosts);
         }
 
         // GET: BlogPosts/Details/5
@@ -166,7 +180,7 @@ namespace WhiteBeltCodeBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CategoryId,Title,Content,LastUpdated,Slug,Abstract,BlogPostImage,TagList,")] BlogPost blogPost, List<int> selectedTags)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CategoryId,Title,Content,LastUpdated,Slug,Abstract,BlogPostImage,TagList,IsPublished,Created")] BlogPost blogPost, List<int> selectedTags)
         {
             if (id != blogPost.Id)
             {

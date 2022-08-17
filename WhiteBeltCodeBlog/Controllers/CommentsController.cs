@@ -64,7 +64,7 @@ namespace WhiteBeltCodeBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,BlogPostId,AuthorId,Created,LastUpdated,UpdateReason,Body,BlogPost,Author")] Comment comment, string? slug)
+        public async Task<IActionResult> Create([Bind("Id,BlogPostId,Body")] Comment comment, string? slug)
         {
             ModelState.Remove("AuthorId");
 

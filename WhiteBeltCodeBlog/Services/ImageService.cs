@@ -10,7 +10,7 @@ namespace WhiteBeltCodeBlog.Services
 
             try
             {
-                string? imageBase64Data = Convert.ToBase64String(fileData);
+                string? imageBase64Data = Convert.ToBase64String(fileData!);
                 return string.Format($"data:{extension};base64, {imageBase64Data}");
                 //^^^^^ Interpolated code
             }

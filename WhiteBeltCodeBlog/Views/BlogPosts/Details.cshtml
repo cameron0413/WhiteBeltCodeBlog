@@ -4,6 +4,7 @@
 
 @using Microsoft.AspNetCore.Identity
 @inject IImageService imageService
+@inject IBlogPostService blogPostService
 
 @inject SignInManager<BlogUser> _SignInManager
 
@@ -11,124 +12,475 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
 
-<div>
-    <h4>@Html.DisplayFor(model => model.Title)</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Content)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Content)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Created)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Created)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LastUpdated)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LastUpdated)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IsPublished)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IsPublished)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Slug)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Slug)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Abstract)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Abstract)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IsDeleted)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IsDeleted)        
-        </dd>
-        <dd>
-            @if (Model.ImageData != null)
-            {
-                <img src="@imageService.ConvertByteArrayToFile(Model.ImageData!, Model.ImageType!)" class="square-img rounded-start" style="height: 120px; width: 120px" alt="...">
-            }
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Category)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Category.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Tags)
-        </dt>
-        <dd>
-            @foreach (Tag tag in Model.Tags)
-            {
-                <p>@tag.Name</p>
-            }
-        </dd>
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Post Layout One || Blogar - Personal Blog Template</title>
+    <meta name="robots" content="noindex, follow" />
+    <meta name="description" content="" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- Favicon -->
+    <link rel="shortcut icon"
+          type="image/x-icon"
+          href="assets/images/favicon.png" />
 
-    </dl>
+    <!-- CSS
+    ============================================ -->
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/vendor/font-awesome.css" />
+    <link rel="stylesheet" href="assets/css/vendor/slick.css" />
+    <link rel="stylesheet" href="assets/css/vendor/slick-theme.css" />
+    <link rel="stylesheet" href="assets/css/vendor/base.css" />
+    <link rel="stylesheet" href="assets/css/plugins/plugins.css" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+</head>
 
-    <label>Tags</label>
-    @foreach (Tag tag in Model.Tags)
-    {
-        <p>@tag.Name</p>
-    }
+<body>
+    <div class="main-wrapper">
+        <div class="mouse-cursor cursor-outer"></div>
+        <div class="mouse-cursor cursor-inner"></div>
 
-    <div class="row">
-        <div class="col-6">
-            @*Display Tags*@
-            <label>@Model.Comments.Count Comments</label>
-            @foreach (Comment comment in Model.Comments)
-            {
-                <div class="border border-dark border-2 p-3">
-                    <p><strong>@comment.Author.FullName</strong></p>
-                    <p>@comment.Body</p>
+        <div id="my_switcher" class="my_switcher">
+            <ul>
+                <li>
+                    <a href="javascript: void(0);"
+                       data-theme="light"
+                       class="setColor light">
+                        <span title="Light Mode">Light</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript: void(0);"
+                       data-theme="dark"
+                       class="setColor dark">
+                        <span title="Dark Mode">Dark</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
 
-                    <p>@comment.Created.ToString("MM-dd-yy hh:mm:ss tt")</p>
+        <!-- Start Header -->
+        @*Header was deleted since it's already in the shared view*@
+        <!-- Start Header -->
+        <!-- Start Mobile Menu Area  -->
+        <div class="popup-mobilemenu-area">
+            <div class="inner">
+                <div class="mobile-menu-top">
+                    <div class="logo">
+                        <a href="index.html">
+                            <img class="dark-logo"
+                                 src="assets/images/logo/logo-black.png"
+                                 alt="Logo Images" />
+                            <img class="light-logo"
+                                 src="assets/images/logo/logo-white2.png"
+                                 alt="Logo Images" />
+                        </a>
+                    </div>
+                    <div class="mobile-close">
+                        <div class="icon">
+                            <i class="fal fa-times"></i>
+                        </div>
+                    </div>
                 </div>
-            }
+                <ul class="mainmenu">
+                    <li class="menu-item-has-children">
+                        <a href="#">Home</a>
+                        <ul class="axil-submenu">
+                            <li><a href="index.html">Home Default</a></li>
+                            <li>
+                                <a href="home-creative-blog.html">Home Creative Blog</a>
+                            </li>
+                            <li><a href="home-seo-blog.html">Home Seo Blog</a></li>
+                            <li><a href="home-tech-blog.html">Home Tech Blog</a></li>
+                            <li>
+                                <a href="home-lifestyle-blog.html">Home Lifestyle Blog</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="menu-item-has-children">
+                        <a href="#">Categories</a>
+                        <ul class="axil-submenu">
+                            <li><a href="post-details.html">Accessibility</a></li>
+                            <li><a href="post-details.html">Android Dev</a></li>
+                            <li><a href="post-details.html">Accessibility</a></li>
+                            <li><a href="post-details.html">Android Dev</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-item-has-children">
+                        <a href="#">Post Format</a>
+                        <ul class="axil-submenu">
+                            <li>
+                                <a href="post-format-standard.html">Post Format Standard</a>
+                            </li>
+                            <li><a href="post-format-video.html">Post Format Video</a></li>
+                            <li>
+                                <a href="post-format-gallery.html">Post Format Gallery</a>
+                            </li>
+                            <li>
+                                <a href="post-format-text.html">Post Format Text Only</a>
+                            </li>
+                            <li><a href="post-layout-1.html">Post Layout One</a></li>
+                            <li><a href="post-layout-2.html">Post Layout Two</a></li>
+                            <li><a href="post-layout-3.html">Post Layout Three</a></li>
+                            <li><a href="post-layout-4.html">Post Layout Four</a></li>
+                            <li><a href="post-layout-5.html">Post Layout Five</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-item-has-children">
+                        <a href="#">Pages</a>
+                        <ul class="axil-submenu">
+                            <li><a href="post-list.html">Post List</a></li>
+                            <li><a href="archive.html">Post Archive</a></li>
+                            <li><a href="author.html">Author Page</a></li>
+                            <li><a href="about.html">About Page</a></li>
+                            <li><a href="maintenance.html">Maintenance</a></li>
+                            <li><a href="contact.html">Contact Us</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="404.html">404 Page</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+                <div class="buy-now-btn">
+                    <a href="#">Buy Now <span class="badge">$15</span></a>
+                </div>
+            </div>
+        </div>
+        <!-- End Mobile Menu Area  -->
+        <!-- Start Post Single Wrapper  -->
+        <div class="post-single-wrapper axil-section-gap bg-color-white">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 offset-lg-2">
+                        <!-- Start Banner Area -->
+                        <div class="banner banner-single-post post-formate post-layout pb--40">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <!-- Start Single Slide  -->
+                                        <div class="content-block">
+                                            <!-- Start Post Content  -->
+                                            <div class="post-content">
+                                                <div class="post-cat">
+                                                    <div class="post-cat-list">
+                                                        <a class="hover-flip-item-wrapper" href="#">
+                                                            <span class="hover-flip-item">
+                                                                <span data-text="FEATURED POST">FEATURED POST</span>
+                                                            </span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <h1 class="title">
+                                                    @Model.Title
+                                                </h1>
+                                                <!-- Post Meta  -->
+                                                <div class="post-meta-wrapper">
+                                                    <div class="post-meta">
+                                                        <div class="post-author-avatar border-rounded">
+                                                            <img src="~/img/cam_lisbon_2021.jpg" style="height:70px;width:80px" />
+                                                        </div>
+                                                        <div class="content">
+                                                            <h6 class="post-author-name">
+                                                                <a class="hover-flip-item-wrapper"
+                                                                   href="author.html">
+                                                                    <span class="hover-flip-item">
+                                                                        <span data-text="Cameron Wilson">Cameron Wilson</span>
+                                                                    </span>
+                                                                </a>
+                                                            </h6>
+                                                            <ul class="post-meta-list">
+                                                                <li>Feb 17, 2019</li>
+                                                                <li>300k Views</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <ul class="social-share-transparent justify-content-end">
+                                                        <li>
+                                                            <a href="#">
+                                                                <i class="fab fa-facebook-f"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#"><i class="fab fa-instagram"></i></a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#"><i class="fab fa-twitter"></i></a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#"><i class="fas fa-link"></i></a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <!-- End Post Content  -->
+                                        </div>
+                                        <!-- End Single Slide  -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Banner Area -->
+                        <!-- Start Blog Details  -->
+                        <div class="axil-post-details">
+                            <p class="has-medium-font-size">
+                                @Model.Abstract
+                            </p>
+                            <figure class="wp-block-image alignwide text-center">
+                                @if (Model.ImageData != null)
+                                {
+                                    <img src="@imageService.ConvertByteArrayToFile(Model.ImageData!,Model.ImageType!)" alt="">
+                                }
+                                else
+                                {
+                                    <img src="~/img/DefaultBlogImage.png" alt="">
+                                }
+                                <figcaption>
+                                    The Apple Design Award trophy, created by the Apple Design
+                                    team, is a symbol of achievement and excellence.
+                                </figcaption>
+                            </figure>
+                            <p>@Model.Content</p>
+
+                            <div class="tagcloud">
+                                <a href="#">Design</a>
+                                <a href="#">Life Style</a>
+                                <a href="#">Web Design</a>
+                                <a href="#">Development</a>
+                                <a href="#">Design</a>
+                                <a href="#">Life Style</a>
+                            </div>
+
+                            <div class="social-share-block">
+                                <div class="post-like">
+                                    <a href="#"><i class="fal fa-thumbs-up"></i><span>2.2k Like</span></a>
+                                </div>
+                                <ul class="social-icon icon-rounded-transparent md-size">
+                                    <li>
+                                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                    </li>
+                                    <li>
+                                        <a href="#"><i class="fab fa-instagram"></i></a>
+                                    </li>
+                                    <li>
+                                        <a href="#"><i class="fab fa-twitter"></i></a>
+                                    </li>
+                                    <li>
+                                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Start Author  -->
+                            <div class="about-author">
+                                <div class="media">
+                                    <div class="thumbnail">
+                                        <a href="#">
+                                            <img src="assets/images/post-images/author/author-b1.png"
+                                                 alt="Author Images" />
+                                        </a>
+                                    </div>
+                                    <div class="media-body">
+                                        <div class="author-info">
+                                            <h5 class="title">
+                                                <a class="hover-flip-item-wrapper" href="#">
+                                                    <span class="hover-flip-item">
+                                                        <span data-text="Cameron Wilson">Cameron Wilson</span>
+                                                    </span>
+                                                </a>
+                                            </h5>
+                                            <span class="b3 subtitle">Sr. UX Designer</span>
+                                        </div>
+                                        <div class="content">
+                                            <p class="b1 description">
+                                                A new programmer
+                                            </p>
+                                            <ul class="social-share-transparent size-md">
+                                                <li>
+                                                    <a href="#"><i class="fab fa-twitter"></i></a>
+                                                </li>
+                                                <li>
+                                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Author  -->
+                            <!-- Start Comment Form Area  -->
+                            <div class="axil-comment-area">
+                                <div class="axil-total-comment-post">
+                                    <div class="title">
+                                        <h4 class="mb--0">@Model.Comments.Count Comments</h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Start Comment Respond  -->
+                            <div class="comment-respond">
+                                <h4 class="title">Post a comment</h4>
+                                <form asp-action="Create" asp-controller="Comments" method="post" id="commentCreate">
+                                    <input type="hidden" asp-for="Id" name="BlogPostId" />
+                                    <input type="hidden" asp-for="Slug" />
+                                    <p class="comment-notes">
+                                        <span id="email-notes">Your email address will not be published.</span>
+                                    </p>
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label for="message"></label>
+                                            <textarea placeholder="Leave a comment" name="Body"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="form-submit cerchio">
+                                            <input name="submit"
+                                                   type="submit"
+                                                   id="submit"
+                                                   class="axil-button button-rounded"
+                                                   value="Post Comment" />
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- End Comment Respond  -->
+                            <!-- Start Comment Area  -->
+                            <div class="axil-comment-area row">
+                                <div class="col-6 g-5">
+                                    <ul class="comment-list">
+
+                                        @if (Model.Comments.Count == 0)
+                                        {
+                                            <p>There are no comments on this post, yet.</p>
+                                        }
+                                        else
+                                        {
+
+
+                                            @foreach (var comment in Model.Comments)
+                                            {
+                                                <!-- Start Single Comment  -->
+
+                                                <li class="comment border border-3 rounded-1 p-2 border-dark my-4">
+                                                    <div class="comment-body">
+                                                        <div class="single-comment">
+                                                            <div class="comment-inner">
+                                                                <h6 class="commenter">
+                                                                    <a class="hover-flip-item-wrapper" href="#">
+                                                                        <span class="hover-flip-item">
+                                                                            <span data-text="@comment.Author.FullName">@comment.Author.FullName</span>
+                                                                        </span>
+                                                                    </a>
+                                                                </h6>
+                                                                <div class="comment-meta">
+                                                                    <div class="time-spent">
+                                                                        @comment.Created.ToString("MMM dd, yyyy")
+                                                                    </div>
+                                                                </div>
+                                                                <div class="comment-text">
+                                                                    <p class="b2">
+                                                                        @comment.Body
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <!-- End Single Comment  -->
+                                            }
+                                        }
+                                    </ul>
+                                </div>
+
+                            </div>
+                            <!-- End Comment Area  -->
+                        </div>
+                        <!-- End Comment Form Area  -->
+                    </div>
+                    <!-- End Blog Details  -->
+                </div>
+            </div>
         </div>
     </div>
-
-
-    @if (_SignInManager.IsSignedIn(User))
-    {
-        <form asp-controller="Comments" asp-action="Create" method="post">
-            <input type="hidden" asp-for="Id" name="BlogPostId" />
-            <input type="hidden" asp-for="Slug" />
-            <div class="form-group">
-                <label name="Body" class="control-label"></label>
-                <textarea name="Body" class="form-control" rows="7"></textarea>
+    <!-- End Post Single Wrapper  -->
+    <!-- Start More Stories Area  -->
+    <div class="axil-more-stories-area axil-section-gap bg-color-grey">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title">
+                        <h2 class="title">More Stories</h2>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="row">
+                <!-- Start Stories Post  -->
+                @foreach (BlogPost blogPost in (await blogPostService.GetPopularBlogPostsAsync(4)))
+                {
+                    <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                        <!-- Start Post List  -->
+                        <div class="post-stories content-block mt--30">
+                            <div class="post-thumbnail">
+                                <a href="post-details.html">
+                                    @if (blogPost.ImageData != null)
+                                    {
+                                        <img src="@imageService.ConvertByteArrayToFile(blogPost.ImageData!,blogPost.ImageType!)" alt="">
+
+                                    }
+                                    else
+                                    {
+                                        <img src="~/img/DefaultBlogImage.png" alt="">
+                                    }
+                                </a>
+                            </div>
+                            <div class="post-content">
+                                <div class="post-cat">
+                                    <div class="post-cat-list">
+                                        <a href="#">@Model.Category</a>
+                                    </div>
+                                </div>
+                                <h5 class="title">
+                                    <a href="post-details.html">@Model.Title</a>
+                                </h5>
+                            </div>
+                        </div>
+                        <!-- End Post List  -->
+                    </div>
+                }
             </div>
-        </form>
-    }
-    else
-    {
-        <p>
-            <a class="btn btn-info" asp-area="Identity" asp-route-returnUrl="@Url.Action("Details","BlogPosts", new {Model.Slug})" asp-page="/Account/Login">Log in to make a comment.</a>
-        </p>
-    }
+        </div>
+    </div>
+    <!-- End More Stories Area  -->
+    <!-- Start Instagram Area  -->
+    @*Deleted Instagram Section*@
+    <!-- End Instagram Area  -->
+    <!-- Start Footer Area  -->
+    @*Deleted Footer Area - Is Already in layout page3*@
+    <!-- End Footer Area  -->
+    <!-- Start Back To Top  -->
+    <a id="backto-top"></a>
+    <!-- End Back To Top  -->
+    </div>
 
+    <!-- JS
+    ============================================ -->
+    <!-- Modernizer JS -->
+    <script src="assets/js/vendor/modernizr.min.js"></script>
+    <!-- jQuery JS -->
+    <script src="assets/js/vendor/jquery.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="assets/js/vendor/bootstrap.min.js"></script>
+    <script src="assets/js/vendor/slick.min.js"></script>
+    <script src="assets/js/vendor/tweenmax.min.js"></script>
+    <script src="assets/js/vendor/js.cookie.js"></script>
+    <script src="assets/js/vendor/jquery.style.switcher.js"></script>
 
-</div>
+    <!-- Main JS -->
+    <script src="assets/js/main.js"></script>
+</body>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
