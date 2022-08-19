@@ -2,7 +2,6 @@
 
 @using X.PagedList;
 @using WhiteBeltCodeBlog.Services.Interfaces;
-@using WhiteBeltCodeBlog.Services;
 @using X.PagedList.Mvc.Core;
 @using X.PagedList.Web.Common;
 
@@ -35,7 +34,7 @@
                                                 <tr>
                                                     <th></th>
                                                     <th>
-                                                        Title
+                                                       Title
                                                     </th>
                                                     <th></th>
                                                 </tr>
@@ -56,15 +55,29 @@
                                                             }
                                                         </td>
                                                         <td class="col-7">
-                                                            Title
+                                                            @blogPost.Title
                                                         </td>
                                                         <td>
-                                                            <a asp-action="Details" asp-controller="Content" asp-route-slug="@blogPost.Slug"></a>
+                                                            <a asp-action="Details" asp-controller="Content" asp-route-slug="@blogPost.Slug">Details</a>
                                                         </td>
                                                     </tr>
                                                 }
                                             </tbody>
                                         </table>
+
+                                    </div>
+                                    <div class="row row-cols-1 g-5">
+                                        <div class="col text-center">
+                                            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+                                        </div>
+                                        <div class="col justify-content-center">
+                                            @Html.PagedListPager(Model, pageNum => Url.Action("SearchIndex", new { searchTerm = ViewBag.searchTerm, pageNum }),
+                                            new PagedListRenderOptions
+                                            {
+                                            LiElementClasses = new string[] { "page-item" },
+                                            PageClasses = new string[] { "page-link" }
+                                            })
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -196,17 +209,3 @@
     </div>
 </div>
 <!-- End More Stories Area  -->
-
-<div class="row row-cols-1 g-5">
-    <div class="col text-center">
-        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
-    </div>
-    <div class="col justify-content-center">
-        @Html.PagedListPager(Model, pageNum => Url.Action("SearchIndex", new { searchTerm = ViewBag.searchTerm, [pageNum] }),
-        new PagedListRenderOptions
-        {
-        LiElementClasses = new string[] { "page-item" },
-        PageClasses = new string[] { "page-link" }
-        })
-    </div>
-</div>

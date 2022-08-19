@@ -19,6 +19,8 @@ namespace WhiteBeltCodeBlog.Services.Interfaces
         public Task<List<BlogPost>> GetRecentBlogPostsAsync(int count); // Defined by the date created. The most recent articles in order of most to least recent will be displayed.
 
         public IEnumerable<BlogPost> Search(string searchString);
+        public Task<List<BlogPost>> GetBlogPostsInCategoryAsync(int categoryId, int count);
+        public Task<List<BlogPost>> GetBlogPostsWithTagAsync(int tagId, int count);
 
 
     }

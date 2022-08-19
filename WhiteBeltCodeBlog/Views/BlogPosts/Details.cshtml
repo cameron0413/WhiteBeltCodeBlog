@@ -192,25 +192,16 @@
                                                                 </a>
                                                             </h6>
                                                             <ul class="post-meta-list">
-                                                                <li>Feb 17, 2019</li>
-                                                                <li>300k Views</li>
+                                                                <li>@Model.Created.ToString("MMM dd, yyyy")</li>
                                                             </ul>
                                                         </div>
                                                     </div>
                                                     <ul class="social-share-transparent justify-content-end">
                                                         <li>
-                                                            <a href="#">
-                                                                <i class="fab fa-facebook-f"></i>
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="#"><i class="fab fa-instagram"></i></a>
-                                                        </li>
-                                                        <li>
                                                             <a href="#"><i class="fab fa-twitter"></i></a>
                                                         </li>
                                                         <li>
-                                                            <a href="#"><i class="fas fa-link"></i></a>
+                                                            <a href=""><i class="fas fa-link"></i></a>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -237,36 +228,18 @@
                                 {
                                     <img src="~/img/DefaultBlogImage.png" alt="">
                                 }
-                                <figcaption>
-                                    The Apple Design Award trophy, created by the Apple Design
-                                    team, is a symbol of achievement and excellence.
-                                </figcaption>
                             </figure>
                             <p>@Model.Content</p>
 
                             <div class="tagcloud">
-                                <a href="#">Design</a>
-                                <a href="#">Life Style</a>
-                                <a href="#">Web Design</a>
-                                <a href="#">Development</a>
-                                <a href="#">Design</a>
-                                <a href="#">Life Style</a>
+                                @foreach (var tag in Model.Tags)
+                                {
+                                    <a asp-controller="Tags" asp-action="Details" asp-route-id="@tag.Id">@tag.Name</a>
+                                }
                             </div>
 
                             <div class="social-share-block">
-                                <div class="post-like">
-                                    <a href="#"><i class="fal fa-thumbs-up"></i><span>2.2k Like</span></a>
-                                </div>
                                 <ul class="social-icon icon-rounded-transparent md-size">
-                                    <li>
-                                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                                    </li>
-                                    <li>
-                                        <a href="#"><i class="fab fa-instagram"></i></a>
-                                    </li>
-                                    <li>
-                                        <a href="#"><i class="fab fa-twitter"></i></a>
-                                    </li>
                                     <li>
                                         <a href="#"><i class="fab fa-linkedin-in"></i></a>
                                     </li>
@@ -277,9 +250,8 @@
                             <div class="about-author">
                                 <div class="media">
                                     <div class="thumbnail">
-                                        <a href="#">
-                                            <img src="assets/images/post-images/author/author-b1.png"
-                                                 alt="Author Images" />
+                                        <a asp-controller="Home" asp-action="AuthorPage">
+                                            <img src="~/img/cam_lisbon_2021.jpg" alt="Author Images" style="height:120px;width:120px;overflow:hidden">
                                         </a>
                                     </div>
                                     <div class="media-body">
@@ -291,11 +263,11 @@
                                                     </span>
                                                 </a>
                                             </h5>
-                                            <span class="b3 subtitle">Sr. UX Designer</span>
+                                            <span class="b3 subtitle">Full-Stack Web Developer</span>
                                         </div>
                                         <div class="content">
                                             <p class="b1 description">
-                                                A new programmer
+                                                A full-stack web developer, hoping to give knowledge to others on their journey to a job in technology.
                                             </p>
                                             <ul class="social-share-transparent size-md">
                                                 <li>
@@ -310,7 +282,7 @@
                                 </div>
                             </div>
                             <!-- End Author  -->
-                            <!-- Start Comment Form Area  -->
+                            <!-- Start Comment Count Area  -->
                             <div class="axil-comment-area">
                                 <div class="axil-total-comment-post">
                                     <div class="title">
@@ -322,7 +294,7 @@
                             <!-- Start Comment Respond  -->
                             <div class="comment-respond">
                                 <h4 class="title">Post a comment</h4>
-                                <form asp-action="Create" asp-controller="Comments" method="post" id="commentCreate">
+                                <form asp-action="Create" asp-controller="Comments" method="post">
                                     <input type="hidden" asp-for="Id" name="BlogPostId" />
                                     <input type="hidden" asp-for="Slug" />
                                     <p class="comment-notes">
@@ -336,11 +308,20 @@
                                     </div>
                                     <div class="col-lg-12">
                                         <div class="form-submit cerchio">
-                                            <input name="submit"
+                                            @if (_SignInManager.IsSignedIn(User) == true)
+                                            {
+                                                <input name="submit"
                                                    type="submit"
                                                    id="submit"
                                                    class="axil-button button-rounded"
                                                    value="Post Comment" />
+                                            }
+                                            else
+                                            {
+                                                <ul class="metabar-block">
+                                                    <li class=""><a class="" asp-area="Identity" asp-page="/Account/Login">Log in to leave a comment.</a></li>
+                                                </ul>
+                                            }
                                         </div>
                                     </div>
                                 </form>
@@ -370,7 +351,7 @@
                                                                 <h6 class="commenter">
                                                                     <a class="hover-flip-item-wrapper" href="#">
                                                                         <span class="hover-flip-item">
-                                                                            <span data-text="@comment.Author.FullName">@comment.Author.FullName</span>
+                                                                            <span data-text="@comment!.Author!.FullName">@comment.Author.FullName</span>
                                                                         </span>
                                                                     </a>
                                                                 </h6>

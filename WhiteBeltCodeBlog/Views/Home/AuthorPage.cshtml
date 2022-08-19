@@ -21,7 +21,7 @@
                                 <span class="b3 subtitle">Full-Stack Web Developer</span>
                             </div>
                             <div class="content">
-                                <p class="b1 description"></p>
+                                <p class="b1 description">A full-stack web developer, hoping to give knowledge to others on their journey to a job in technology.</p>
                                 <ul class="social-share-transparent size-md">
                                     <li><a href="#"><i class="fab fa-twitter"></i></a></li>
                                     <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
@@ -65,7 +65,7 @@
                         <div class="post-content">
                             <div class="post-cat">
                                 <div class="post-cat-list">
-                                    <a class="hover-flip-item-wrapper" href="#">
+                                    <a class="hover-flip-item-wrapper" asp-controller="Categories" asp-action="Details" asp-route-id="@blogPost.Category.Id" >
                                         <span class="hover-flip-item">
                                             <span data-text="@blogPost.Category!.Name">@blogPost.Category.Name</span>
                                         </span>
@@ -94,8 +94,7 @@
                                     </div>
                                 </div>
                                 <ul class="social-share-transparent justify-content-end">
-                                    <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                                    <li><a href="#"><i class="fas fa-link"></i></a></li>
+                                    <li><a ><i class="fas fa-link"></i></a></li>
                                 </ul>
                             </div>
                         </div>
@@ -115,17 +114,6 @@
 
                                 <li class="cat-item">
                                     <a asp-controller="Categories" asp-action="Details" asp-route-id="@category.Id" class="inner">
-                                        <div class="thumbnail">
-                                            @if (category.ImageData != null)
-                                            {
-                                                <img src="@_ImageService.ConvertByteArrayToFile(category.ImageData!,category.ImageType!)" alt="">
-
-                                            }
-                                            else
-                                            {
-                                                <img src="~/img/DefaultBlogImage.png" alt="">
-                                            }
-                                        </div>
                                         <div class="content">
                                             <h5 class="title">@category.Name</h5>
                                         </div>
@@ -136,104 +124,40 @@
                     </div>
                     <!-- End Single Widget  -->
                     <!-- Start Single Widget  -->
-                    <div class="axil-single-widget widget widget_search mb--30">
-                        <h5 class="widget-title">Search</h5>
-                        <form action="#">
-                            <div class="axil-search form-group">
-                                <button type="submit" class="search-button"><i class="fal fa-search"></i></button>
-                                <input type="text" class="form-control" placeholder="Search">
-                            </div>
-                        </form>
-                    </div>
-                    <!-- End Single Widget  -->
-                    <!-- Start Single Widget  -->
                     <div class="axil-single-widget widget widget_postlist mb--30">
                         <h5 class="widget-title">Popular Posts</h5>
                         <!-- Start Post List  -->
                         <div class="post-medium-block">
                             @foreach (var item in await _BlogPostService.GetPopularBlogPostsAsync(3))
                             {
-                            <!-- Start Single Post  -->
-                            <div class="content-block post-medium mb--20">
-                                <div class="post-thumbnail">
-                                    <a href="post-details.html">
-                                        <img src="@_ImageService.ConvertByteArrayToFile(item.ImageData!, item.ImageType!)" alt="Post Images">
-                                    </a>
-                                </div>
-                                <div class="post-content">
-                                    <h6 class="title">
+                                <!-- Start Single Post  -->
+                                <div class="content-block post-medium mb--20">
+                                    <div class="post-thumbnail">
                                         <a href="post-details.html">
-                                            @item.Abstract
+                                            <img src="@_ImageService.ConvertByteArrayToFile(item.ImageData!, item.ImageType!)" alt="Post Images">
                                         </a>
-                                    </h6>
-                                    <div class="post-meta">
-                                        <ul class="post-meta-list">
-                                            <li>@item.Created.ToString("MMM dd, yyyy")</li>
-                                            <li>@item.Comments.Count Comments</li>
-                                        </ul>
+                                    </div>
+                                    <div class="post-content">
+                                        <h6 class="title">
+                                            <a href="post-details.html">
+                                                @item.Abstract
+                                            </a>
+                                        </h6>
+                                        <div class="post-meta">
+                                            <ul class="post-meta-list">
+                                                <li>@item.Created.ToString("MMM dd, yyyy")</li>
+                                                <li>@item.Comments.Count Comments</li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                                
+
                             }
                             <!-- End Single Post  -->
 
                         </div>
                         <!-- End Post List  -->
 
-                    </div>
-                    <!-- End Single Widget  -->
-                    <!-- Start Single Widget  -->
-                    <div class="axil-single-widget widget widget_social mb--30">
-                        <h5 class="widget-title">Stay In Touch</h5>
-                        <!-- Start Post List  -->
-                        <ul class="social-icon md-size justify-content-center">
-                            <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-                            <li><a href="#"><i class="fab fa-instagram"></i></a></li>
-                            <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                            <li><a href="#"><i class="fab fa-slack"></i></a></li>
-                            <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
-                        </ul>
-                        <!-- End Post List  -->
-                    </div>
-                    <!-- End Single Widget  -->
-                    <!-- Start Single Widget  -->
-                    <div class="axil-single-widget widget widget_instagram mb--30">
-                        <h5 class="widget-title">Instagram</h5>
-                        <!-- Start Post List  -->
-                        <ul class="instagram-post-list-wrapper">
-                            <li class="instagram-post-list">
-                                <a href="#">
-                                    <img src="assets/images/small-images/instagram-01.jpg" alt="Instagram Images">
-                                </a>
-                            </li>
-                            <li class="instagram-post-list">
-                                <a href="#">
-                                    <img src="assets/images/small-images/instagram-02.jpg" alt="Instagram Images">
-                                </a>
-                            </li>
-                            <li class="instagram-post-list">
-                                <a href="#">
-                                    <img src="assets/images/small-images/instagram-03.jpg" alt="Instagram Images">
-                                </a>
-                            </li>
-                            <li class="instagram-post-list">
-                                <a href="#">
-                                    <img src="assets/images/small-images/instagram-04.jpg" alt="Instagram Images">
-                                </a>
-                            </li>
-                            <li class="instagram-post-list">
-                                <a href="#">
-                                    <img src="assets/images/small-images/instagram-05.jpg" alt="Instagram Images">
-                                </a>
-                            </li>
-                            <li class="instagram-post-list">
-                                <a href="#">
-                                    <img src="assets/images/small-images/instagram-06.jpg" alt="Instagram Images">
-                                </a>
-                            </li>
-                        </ul>
-                        <!-- End Post List  -->
                     </div>
                     <!-- End Single Widget  -->
                 </div>
