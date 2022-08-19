@@ -1,4 +1,6 @@
-﻿@inject SignInManager<BlogUser> SignInManager
+﻿@using Microsoft.AspNetCore.Identity;
+
+@inject SignInManager<BlogUser> _SignInManager
 
 <!doctype html>
 <html class="no-js" lang="en">
@@ -68,42 +70,17 @@
                                     <li class="menu-item-has-children">
                                         <a asp-controller="Home" asp-action="AuthorPage">Home</a>
                                     </li>
-                                    <li class="menu-item-has-children">
-                                        <a asp-controller="BlogPosts" asp-action="Index">Posts</a>
-                                        <ul class="axil-submenu">
-                                            @if (SignInManager.IsSignedIn(User))
-                                            {
-                                                <li>
-                                                    <a class="hover-flip-item-wrapper" asp-controller="BlogPosts" asp-action="Index">
-                                                        <span class="">
-                                                            <span>All Blog Posts</span>
-                                                        </span>
-                                                    </a>
-                                                </li>
-                                            }
-
-                                            <li>
-                                                <a class="hover-flip-item-wrapper" href="post-format-video.html">
-                                                    <span class="hover-flip-item">
-                                                        <span> data-text="Popular Posts"Popular Posts</span>
-                                                    </span>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="hover-flip-item-wrapper" href="post-format-video.html">
-                                                    <span class="hover-flip-item">
-                                                        <span data-text="Recent Posts">Recent Posts</span>
-                                                    </span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="home-lifestyle-blog.html">About</a></li>
+                                    @if (_SignInManager.IsSignedIn(User))
+                                    {
+                                        <li class="menu-item-has-children">
+                                            <a asp-controller="BlogPosts" asp-action="Index">Posts</a>
+                                        </li>
+                                    }
                                     <li><a href="home-tech-blog.html">Contact</a></li>
                                     @if (User.IsInRole("Administrator"))
                                     {
                                         <li class="menu-item-has-children">
-                                            <a href="#">Author</a>
+                                            <a href="#">Manage</a>
                                             <ul class="axil-submenu">
                                                 <li>
                                                     <a class="hover-flip-item-wrapper" asp-controller="BlogPosts" asp-action="Create">
@@ -136,18 +113,28 @@
                                             </ul>
                                         </li>
                                     }
+
                                 </ul>
                                 <!-- End Mainmanu Nav -->
                             </nav>
                         </div>
                     </div>
 
+
+
                     <div class="col-xl-3 col-lg-8 col-md-8 col-sm-9 col-12">
                         <div class="header-search text-end d-flex align-items-center">
+                            @*<partial name="_LoginPartial" />*@
                             <ul class="metabar-block">
-                                <li class=""><a class="" asp-area="Identity" asp-page="/Account/Login">Login</a></li>
+                                @if (!_SignInManager.IsSignedIn(User))
+                                {
+                                    <li class=""><a class="axil-button button-rounded btn-primary" style="height:35px;display:inline-flex;align-items:center" asp-area="Identity" asp-page="/Account/Login">Login</a></li>
+                                } else
+                                {
+                                    <li class=""><a class="axil-button button-rounded btn-primary btn-group-sm" style="height:35px;display:inline-flex;align-items:center" asp-area="Identity" asp-page="/Account/Logout" type="submit" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">Logout</a></li>
+                                }
                             </ul>
-                            <form class="header-search-form d-sm-block d-none" asp-controller="BlogPosts" asp-action="SearchIndex">
+                            <form class="header-search-form d-sm-block d-none ms-3" asp-controller="BlogPosts" asp-action="SearchIndex">
                                 <div class="axil-search form-group">
                                     <button type="submit" class="search-button"><i class="fal fa-search"></i></button>
                                     <input type="text" class="form-control" placeholder="Search" name="searchTerm">
@@ -162,11 +149,6 @@
                                     </div>
                                 </form>
                             </div>
-                            <ul class="metabar-block">
-                                <li class="icon"><a href="#"><i class="fas fa-bookmark"></i></a></li>
-                                <li class="icon"><a href="#"><i class="fas fa-bell"></i></a></li>
-                                <li><a href="#"><img src="~/assets/images/others/author.png" alt="Author Images"></a></li>
-                            </ul>
                             <!-- Start Hamburger Menu  -->
                             <div class="hamburger-menu d-block d-xl-none">
                                 <div class="hamburger-inner">

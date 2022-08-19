@@ -17,6 +17,7 @@ using X.PagedList;
 
 namespace WhiteBeltCodeBlog.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     public class BlogPostsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -39,11 +40,21 @@ namespace WhiteBeltCodeBlog.Controllers
         // GET: BlogPosts
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.BlogPosts.Include(b => b.Category).Include(b => b.Tags);
+
+            // To Do: Use Service
+
+
+            var applicationDbContext = _context.BlogPosts
+                                               .Where(b => b.IsDeleted == false)
+                                               .Include(b => b.Category)
+                                               .Include(b => b.Tags);
+
+
+
             return View(await applicationDbContext.ToListAsync());
         }
 
-
+        [AllowAnonymous]
         public async Task<IActionResult> SearchIndex(string searchTerm, int? pageNum)
         {
             int pageSize = 4;
@@ -56,6 +67,7 @@ namespace WhiteBeltCodeBlog.Controllers
             return View(blogPosts);
         }
 
+        [AllowAnonymous]
         // GET: BlogPosts/Details/5
         public async Task<IActionResult> Details(string? slug)
         {
@@ -262,11 +274,9 @@ namespace WhiteBeltCodeBlog.Controllers
                 return Problem("Entity set 'ApplicationDbContext.BlogPosts'  is null.");
             }
             var blogPost = await _context.BlogPosts.FindAsync(id);
-            if (blogPost != null)
-            {
-                _context.BlogPosts.Remove(blogPost);
-            }
-            
+
+            blogPost.IsDeleted = true;
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
