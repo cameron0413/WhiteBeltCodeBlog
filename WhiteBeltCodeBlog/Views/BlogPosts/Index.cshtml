@@ -1,9 +1,10 @@
 ﻿@model IEnumerable<WhiteBeltCodeBlog.Models.BlogPost>
 
+@using WhiteBeltCodeBlog.Enums
 @using WhiteBeltCodeBlog.Services.Interfaces
 @using WhiteBeltCodeBlog.Services
 
-@inject IImageService imageService
+@inject IImageService _ImageService
 
 @{
     ViewData["Title"] = "Index";
@@ -65,10 +66,7 @@
                     @Html.DisplayFor(modelItem => item.Abstract)
                 </td>
                 <td>
-                @if (item.ImageData != null)
-                {
-                    <img src="@imageService.ConvertByteArrayToFile(item.ImageData!, item.ImageType!)" class="square-img rounded-start" style="height: 120px; width: 120px" alt="...">
-                }
+                <img class="img-fluid" src="@_ImageService.ConvertByteArrayToFile(item.ImageData!,item.ImageType!,(int)DefaultImage.BlogPost)" alt="Post Images">
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Category.Name)

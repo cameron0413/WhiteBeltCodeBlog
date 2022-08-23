@@ -1,10 +1,11 @@
 ﻿@model WhiteBeltCodeBlog.Models.BlogPost
+@using WhiteBeltCodeBlog.Enums
 @using WhiteBeltCodeBlog.Services.Interfaces
 @using WhiteBeltCodeBlog.Services
 
 @using Microsoft.AspNetCore.Identity
-@inject IImageService imageService
-@inject IBlogPostService blogPostService
+@inject IImageService _ImageService
+@inject IBlogPostService _BlogPostService
 
 @inject SignInManager<BlogUser> _SignInManager
 
@@ -31,12 +32,15 @@
     ============================================ -->
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css" />
-    <link rel="stylesheet" href="assets/css/vendor/font-awesome.css" />
+    @*<link rel="stylesheet" href="assets/css/vendor/font-awesome.css" />*@
     <link rel="stylesheet" href="assets/css/vendor/slick.css" />
     <link rel="stylesheet" href="assets/css/vendor/slick-theme.css" />
     <link rel="stylesheet" href="assets/css/vendor/base.css" />
     <link rel="stylesheet" href="assets/css/plugins/plugins.css" />
     <link rel="stylesheet" href="assets/css/style.css" />
+
+    @*Font Awesome Kit JavaScript Below: *@
+    <script src="https://kit.fontawesome.com/2bae951c60.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -220,16 +224,9 @@
                                 @Model.Abstract
                             </p>
                             <figure class="wp-block-image alignwide text-center">
-                                @if (Model.ImageData != null)
-                                {
-                                    <img src="@imageService.ConvertByteArrayToFile(Model.ImageData!,Model.ImageType!)" alt="">
-                                }
-                                else
-                                {
-                                    <img src="~/img/DefaultBlogImage.png" alt="">
-                                }
+                                <img class="img-fluid" src="@_ImageService.ConvertByteArrayToFile(Model.ImageData!,Model.ImageType!,(int)DefaultImage.BlogPost)" alt="Post Images">
                             </figure>
-                            <p>@Model.Content</p>
+                            <p>@Html.Raw(Model.Content)</p>
 
                             <div class="tagcloud">
                                 @foreach (var tag in Model.Tags)
@@ -365,6 +362,20 @@
                                                                         @comment.Body
                                                                     </p>
                                                                 </div>
+                                                                @if (_SignInManager.IsSignedIn(User) && comment.AuthorId == _SignInManager.UserManager.GetUserId(User)) //User is signed in AND they themselves left the comment
+                                                                {
+                                                                    <div>
+                                                                        <a asp-controller="Comments" asp-action="Delete" asp-route-id="@comment.Id"><i class="fa-solid fa-delete-left"></i></a>
+                                                                        <a asp-controller="Comments" asp-action="Edit" asp-route-id="@comment.Id"><i class="fa-regular fa-pen-to-square"></i></a>
+                                                                    </div>
+                                                                }
+                                                                else if (User.IsInRole("Administrator") && comment.AuthorId != _SignInManager.UserManager.GetUserId(User)) //(User is administrator but didn't leave the comment)
+                                                                {
+                                                                    <div>
+                                                                        <a asp-controller="Comments" asp-action="Delete"><i class="far-"></i></a>
+                                                                    </div>
+                                                                }
+
                                                             </div>
                                                         </div>
                                                     </div>
@@ -398,22 +409,14 @@
             </div>
             <div class="row">
                 <!-- Start Stories Post  -->
-                @foreach (BlogPost blogPost in (await blogPostService.GetPopularBlogPostsAsync(4)))
+                @foreach (BlogPost blogPost in (await _BlogPostService.GetPopularBlogPostsAsync(4)))
                 {
                     <div class="col-lg-3 col-md-6 col-sm-6 col-12">
                         <!-- Start Post List  -->
                         <div class="post-stories content-block mt--30">
                             <div class="post-thumbnail">
                                 <a href="post-details.html">
-                                    @if (blogPost.ImageData != null)
-                                    {
-                                        <img src="@imageService.ConvertByteArrayToFile(blogPost.ImageData!,blogPost.ImageType!)" alt="">
-
-                                    }
-                                    else
-                                    {
-                                        <img src="~/img/DefaultBlogImage.png" alt="">
-                                    }
+                                    <img class="img-fluid" src="@_ImageService.ConvertByteArrayToFile(blogPost.ImageData!,blogPost.ImageType!,(int)DefaultImage.BlogPost)" alt="Post Images">
                                 </a>
                             </div>
                             <div class="post-content">

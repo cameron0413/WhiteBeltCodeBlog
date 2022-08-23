@@ -4,12 +4,14 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WhiteBeltCodeBlog.Models;
+using WhiteBeltCodeBlog.Services.Interfaces;
 
 namespace WhiteBeltCodeBlog.Areas.Identity.Pages.Account.Manage
 {
@@ -17,13 +19,17 @@ namespace WhiteBeltCodeBlog.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<BlogUser> _userManager;
         private readonly SignInManager<BlogUser> _signInManager;
+        private readonly IImageService _ImageService;
 
         public IndexModel(
             UserManager<BlogUser> userManager,
-            SignInManager<BlogUser> signInManager)
+            SignInManager<BlogUser> signInManager,
+            IImageService imageService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _ImageService = imageService;
+
         }
 
         /// <summary>
@@ -58,7 +64,22 @@ namespace WhiteBeltCodeBlog.Areas.Identity.Pages.Account.Manage
             /// </summary>
             [Phone]
             [Display(Name = "Phone number")]
+
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+
             public string PhoneNumber { get; set; }
+
+
+            //Properties for storing image
+            public byte[]? ImageData { get; set; }
+            public string? ImageType { get; set; } = "";
+
+
+            //Property for passing file information from the form(html) to the post.
+            //Also not saved in the database via [NotMapped] attribute
+            [NotMapped]
+            public virtual IFormFile? ImageFile { get; set; }
         }
 
         private async Task LoadAsync(BlogUser user)
@@ -70,7 +91,10 @@ namespace WhiteBeltCodeBlog.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                ImageData = user.ImageData,
             };
         }
 
@@ -99,6 +123,18 @@ namespace WhiteBeltCodeBlog.Areas.Identity.Pages.Account.Manage
                 await LoadAsync(user);
                 return Page();
             }
+
+
+            user.FirstName = Input.FirstName;
+            user.LastName = Input.LastName;
+            if (Input.ImageFile != null)
+            {
+                user.ImageData = await _ImageService.ConvertFileToByteArrayAsync(Input.ImageFile);
+                user.ImageType = Input.ImageFile.ContentType;
+            }
+
+            await _userManager.UpdateAsync(user);
+
 
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)

@@ -6,12 +6,13 @@
 @{
     ViewData["Title"] = "Details";
 }
+@using WhiteBeltCodeBlog.Enums
 @using WhiteBeltCodeBlog.Services.Interfaces
 @using WhiteBeltCodeBlog.Services
 
 @using Microsoft.AspNetCore.Identity
-@inject IImageService imageService
-@inject IBlogPostService blogPostService
+@inject IImageService _ImageService
+@inject IBlogPostService _BlogPostService
 
 @inject SignInManager<BlogUser> _SignInManager
 
@@ -224,20 +225,13 @@
                     </div>
                     <div class="col-lg-8 col-xl-8">
                         <!-- Start Post List  -->
-                        @foreach (var blogPost in await blogPostService.GetBlogPostsWithTagAsync(@Model.Id, 5))
+                        @foreach (var blogPost in await _BlogPostService.GetBlogPostsWithTagAsync(@Model.Id, 5))
                         {
                             <!-- Start Post List  -->
                             <div class="content-block post-list-view mt--30">
                                 <div class="post-thumbnail">
                                     <a asp-controller="Content" asp-action="@blogPost.Slug">
-                                        @if (blogPost.ImageData != null)
-                                        {
-                                            <img class="img-fluid" src="@imageService.ConvertByteArrayToFile(blogPost.ImageData!,blogPost.ImageType!)" alt="Post Images">
-                                        }
-                                        else
-                                        {
-                                            <img src="~/img/DefaultBlogImage.png" alt="Post Images">
-                                        }
+                                        <img class="img-fluid" src="@_ImageService.ConvertByteArrayToFile(blogPost.ImageData!,blogPost.ImageType!,(int)DefaultImage.BlogPost)" alt="Post Images">
                                     </a>
                                     @*<a class="video-popup icon-color-secondary size-medium position-top-center" href="post-details.html"><span class="play-icon"></span></a>*@
                                 </div>
@@ -290,7 +284,7 @@
                             <!-- Start Single Widget  -->
                             <div class="axil-single-widget widget widget_categories mb--30">
                                 <ul>
-                                    @foreach (Category category in (await blogPostService.GetCategoriesAsync()).Take(4)) // The .Take(4) method makes it return up to four categories
+                                    @foreach (Category category in (await _BlogPostService.GetCategoriesAsync()).Take(4)) // The .Take(4) method makes it return up to four categories
                                     {
 
                                         <li class="cat-item">
@@ -309,20 +303,13 @@
                                 <h5 class="widget-title">Popular Post</h5>
                                 <!-- Start Post List  -->
                                 <div class="post-medium-block">
-                                    @foreach (var blogPost in await blogPostService.GetPopularBlogPostsAsync(3))
+                                    @foreach (var blogPost in await _BlogPostService.GetPopularBlogPostsAsync(3))
                                     {
                                         <!-- Start Single Post  -->
                                         <div class="content-block post-medium mb--20">
                                             <div class="post-thumbnail">
                                                 <a href="post-details.html">
-                                                    @if (blogPost.ImageData != null)
-                                                    {
-                                                        <img src="@imageService.ConvertByteArrayToFile(blogPost.ImageData!,blogPost.ImageType!)" alt="">
-                                                    }
-                                                    else
-                                                    {
-                                                        <img src="~/img/DefaultBlogImage.png" alt="">
-                                                    }
+                                                    <img class="img-fluid" src="@_ImageService.ConvertByteArrayToFile(blogPost.ImageData!,blogPost.ImageType!,(int)DefaultImage.BlogPost)" alt="Post Images">
                                                 </a>
                                             </div>
                                             <div class="post-content">

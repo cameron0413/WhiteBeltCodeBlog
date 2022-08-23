@@ -13,7 +13,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="~/assets/images/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/WBCB_Favicon.png">
 
     <!-- CSS
     ============================================ -->
@@ -25,6 +25,9 @@
     <link rel="stylesheet" href="~/assets/css/vendor/base.css">
     <link rel="stylesheet" href="~/assets/css/plugins/plugins.css">
     <link rel="stylesheet" href="~/assets/css/style.css">
+
+    @*Font Awesome JavaScript below:*@
+    <script src="https://kit.fontawesome.com/2bae951c60.js" crossorigin="anonymous"></script>
 
 </head>
 
@@ -55,7 +58,7 @@
                 <div class="row justify-content-between align-items-center">
                     <div class="col-xl-3 col-lg-3 col-md-4 col-sm-3 col-12">
                         <div class="logo">
-                            <a href="index.html">
+                            <a asp-controller="Home" asp-action="AuthorPage">
                                 <img class="dark-logo rounded-3" src="/img/WBCB_Watermark.png" alt="WBCB logo">
                                 <img class="light-logo rounded-3" src="/img/WBCB_Watermark.png" alt="WBCB logo">
                             </a>
@@ -75,12 +78,14 @@
                                         <li class="menu-item-has-children">
                                             <a asp-controller="BlogPosts" asp-action="Index">Posts</a>
                                         </li>
+                                        <li>
+                                            <a asp-action="ContactMe" asp-controller="Home">Contact</a>
+                                        </li>
                                     }
-                                    <li><a href="home-tech-blog.html">Contact</a></li>
                                     @if (User.IsInRole("Administrator"))
                                     {
                                         <li class="menu-item-has-children">
-                                            <a href="#">Manage</a>
+                                            <a asp-controller="BlogPosts" asp-action="Index">Manage</a>
                                             <ul class="axil-submenu">
                                                 <li>
                                                     <a class="hover-flip-item-wrapper" asp-controller="BlogPosts" asp-action="Create">
@@ -129,7 +134,8 @@
                                 @if (!_SignInManager.IsSignedIn(User))
                                 {
                                     <li class=""><a class="axil-button button-rounded btn-primary" style="height:35px;display:inline-flex;align-items:center" asp-area="Identity" asp-page="/Account/Login">Login</a></li>
-                                } else
+                                }
+                                else
                                 {
                                     <li class=""><a class="axil-button button-rounded btn-primary btn-group-sm" style="height:35px;display:inline-flex;align-items:center" asp-area="Identity" asp-page="/Account/Logout" type="submit" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">Logout</a></li>
                                 }
@@ -161,7 +167,7 @@
                 </div>
             </div>
         </header>
-        <!-- Start Header -->
+        <!-- End Header -->
         <!-- Start Mobile Menu Area  -->
         <div class="popup-mobilemenu-area">
             <div class="inner">
@@ -334,6 +340,8 @@
     <script src="~/assets/js/vendor/tweenmax.min.js"></script>
     <script src="~/assets/js/vendor/js.cookie.js"></script>
     <script src="~/assets/js/vendor/jquery.style.switcher.js"></script>
+
+
 
 
     <!-- Main JS -->

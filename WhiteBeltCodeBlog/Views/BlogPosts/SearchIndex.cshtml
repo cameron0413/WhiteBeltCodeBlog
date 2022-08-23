@@ -1,5 +1,6 @@
 ﻿@model IPagedList<BlogPost>
 
+@using WhiteBeltCodeBlog.Enums
 @using X.PagedList;
 @using WhiteBeltCodeBlog.Services.Interfaces;
 @using X.PagedList.Mvc.Core;
@@ -44,15 +45,7 @@
                                                 {
                                                     <tr>
                                                         <td class="col-5">
-                                                            @if (blogPost.ImageData != null)
-                                                            {
-                                                                <img src="@_ImageService.ConvertByteArrayToFile(blogPost.ImageData!,blogPost.ImageType!)" alt="">
-
-                                                            }
-                                                            else
-                                                            {
-                                                                <img src="~/img/DefaultBlogImage.png" alt="">
-                                                            }
+                                                            <img class="img-fluid" src="@_ImageService.ConvertByteArrayToFile(blogPost.ImageData!,blogPost.ImageType!,(int)DefaultImage.BlogPost)" alt="Post Images">
                                                         </td>
                                                         <td class="col-7">
                                                             @blogPost.Title

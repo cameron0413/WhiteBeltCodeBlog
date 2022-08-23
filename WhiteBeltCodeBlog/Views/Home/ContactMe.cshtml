@@ -1,0 +1,28 @@
+﻿@model WhiteBeltCodeBlog.Models.EmailData
+
+
+
+
+<h1>Question or Comment? Email Me:</h1>
+<div class="p-2">
+    <form asp-action="ContactMe" method="post">
+        <label>@Model.EmailAddress</label>
+        <input type="hidden" asp-for="EmailAddress"/>
+        <div class="row row-cols-1 g-3">
+            <div class="col">
+                <label asp-for="Subject" class="form-label">Subject:</label>
+                <input type="text" class="form-control" asp-for="Subject" />
+            </div>
+            <div class="col">
+                <label asp-for="Body" class="form-label">Message:</label>
+                <textarea class="form-control" rows=10 asp-for="Body" required></textarea>
+            </div>
+            <div class="col text-end">
+                <button class="btn btn-primary rounded-pill btnlinks" type="submit">Send</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="p-2">
+    <a asp-controller="Home" asp-action="AuthorPage">Home</a>
+</div>
