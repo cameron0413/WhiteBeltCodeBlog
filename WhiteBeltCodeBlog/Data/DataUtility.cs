@@ -96,7 +96,7 @@ namespace WhiteBeltCodeBlog.Data
                     EmailConfirmed = true
                 };
 
-
+                //Show this to Ethan
                 await userManager.CreateAsync(adminUser, configuration["AdminPwd"] ?? Environment.GetEnvironmentVariable("AdminPwd"));
                 await userManager.AddToRoleAsync(adminUser, _adminRole);
             }
@@ -113,7 +113,7 @@ namespace WhiteBeltCodeBlog.Data
                     EmailConfirmed = true
                 };
 
-
+                //Show this to Ethan
                 await userManager.CreateAsync(modUser, configuration["ModeratorPwd"] ?? Environment.GetEnvironmentVariable("ModeratorPwd"));
                 await userManager.AddToRoleAsync(modUser, _modRole);
             }
