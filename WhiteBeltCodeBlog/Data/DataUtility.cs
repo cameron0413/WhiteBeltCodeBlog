@@ -97,7 +97,7 @@ namespace WhiteBeltCodeBlog.Data
                 };
 
 
-                await userManager.CreateAsync(adminUser, "O Meu Brasil1");
+                await userManager.CreateAsync(adminUser, configuration["AdminPwd"] ?? Environment.GetEnvironmentVariable("AdminPwd"));
                 await userManager.AddToRoleAsync(adminUser, _adminRole);
             }
 
@@ -114,7 +114,7 @@ namespace WhiteBeltCodeBlog.Data
                 };
 
 
-                await userManager.CreateAsync(modUser, "O Meu Brasil1");
+                await userManager.CreateAsync(modUser, configuration["ModeratorPwd"] ?? Environment.GetEnvironmentVariable("ModeratorPwd"));
                 await userManager.AddToRoleAsync(modUser, _modRole);
             }
 
