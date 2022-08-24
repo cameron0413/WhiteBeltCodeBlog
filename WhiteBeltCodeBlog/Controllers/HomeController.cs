@@ -55,6 +55,7 @@ namespace WhiteBeltCodeBlog.Controllers
         }
 
         [Authorize]
+        //Get Method
         public async Task<IActionResult> ContactMe(string id)
         {
             string blogUserId = _userManager.GetUserId(User);
