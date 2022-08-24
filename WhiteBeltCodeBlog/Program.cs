@@ -14,8 +14,7 @@ var connectionString = DataUtility.GetConnectionString(builder.Configuration);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString,
-    o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
-    ));
+    o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
 //later on, we will add "split queries" here. Ask Antonio what that means.
 

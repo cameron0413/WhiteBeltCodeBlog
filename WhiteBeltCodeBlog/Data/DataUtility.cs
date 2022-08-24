@@ -49,8 +49,6 @@ namespace WhiteBeltCodeBlog.Data
             // Service: An instance of RoleManager
             var dbContextSvc = svcProvider.GetRequiredService<ApplicationDbContext>();
 
-            // Migration: This is the programmatic equivalent to Update-Database
-            await dbContextSvc.Database.MigrateAsync();
 
             // Service: An instance of Configuration Service
             var configurationSvc = svcProvider.GetRequiredService<IConfiguration>();
@@ -61,6 +59,8 @@ namespace WhiteBeltCodeBlog.Data
             //Service: An instance of the UserManager
             var userManagerSvc = svcProvider.GetRequiredService<UserManager<BlogUser>>();
 
+            // Migration: This is the programmatic equivalent to Update-Database
+            await dbContextSvc.Database.MigrateAsync();
 
             // Seed Roles
             await SeedRolesAsync(roleManagerSvc);
