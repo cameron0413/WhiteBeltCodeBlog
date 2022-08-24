@@ -1,11 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using WhiteBeltCodeBlog.Models;
 using WhiteBeltCodeBlog.Services.Interfaces;
-using System.Text;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
-using Microsoft.Extensions.Options;
 
 namespace WhiteBeltCodeBlog.Services
 {

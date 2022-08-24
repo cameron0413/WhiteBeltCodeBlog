@@ -8,7 +8,7 @@ namespace WhiteBeltCodeBlog.Data
     public static class DataUtility
     {
         private const string _adminEmail = "cameron0413@gmail.com";
-        private const string _modEmail = "";
+        private const string _modEmail = "cawilson@amplify.com";
         private const string _adminRole = "Administrator";
         private const string _modRole = "Moderator";
 
@@ -84,7 +84,7 @@ namespace WhiteBeltCodeBlog.Data
 
         private static async Task SeedUsersAsync(ApplicationDbContext context, IConfiguration configuration, UserManager<BlogUser> userManager)
         {
-            if(!context.Users.Any(u => u.Email == _adminEmail))
+            if (!context.Users.Any(u => u.Email == _adminEmail))
             {
                 BlogUser adminUser = new()
                 {
@@ -114,8 +114,17 @@ namespace WhiteBeltCodeBlog.Data
                 };
 
                 //Show this to Ethan
-                await userManager.CreateAsync(modUser, configuration["ModeratorPwd"] ?? Environment.GetEnvironmentVariable("ModeratorPwd"));
-                await userManager.AddToRoleAsync(modUser, _modRole);
+                try
+                {
+                    await userManager.CreateAsync(modUser, configuration["ModeratorPwd"] ?? Environment.GetEnvironmentVariable("ModeratorPwd"));
+                    await userManager.AddToRoleAsync(modUser, _modRole);
+                }
+
+                catch (Exception ex)
+                {
+                    var err = ex.Message;
+                    throw;
+                }
             }
 
         }
