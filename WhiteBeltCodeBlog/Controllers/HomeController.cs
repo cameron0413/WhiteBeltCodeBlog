@@ -1,11 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using WhiteBeltCodeBlog.Data;
+using WhiteBeltCodeBlog.Extensions;
 using WhiteBeltCodeBlog.Models;
+using WhiteBeltCodeBlog.Services;
 using WhiteBeltCodeBlog.Services.Interfaces;
+using X.PagedList;
+
 
 namespace WhiteBeltCodeBlog.Controllers
 {
@@ -30,12 +35,18 @@ namespace WhiteBeltCodeBlog.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> AuthorPage()
+        public async Task<IActionResult> AuthorPage(int? pageNum)
         {
             //To Do: Create Service to get blogposts
 
-            List<BlogPost> posts = (await _blogPostService.GetAllBlogPostsAsync()).Where(p => p.IsPublished).ToList();
-            return View(posts);
+            int pageSize = 4;
+            int page = pageNum ?? 1; //The double question mark is a null-coalescing operator
+
+            IEnumerable<BlogPost> posts = await _blogPostService.GetAllBlogPostsAsync();
+            IPagedList<BlogPost> blogPosts =await  posts.ToPagedListAsync(page, pageSize);
+
+
+            return View(blogPosts);
         }
 
         public IActionResult Index()

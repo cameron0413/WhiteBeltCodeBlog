@@ -126,7 +126,7 @@ namespace WhiteBeltCodeBlog.Services
         public async Task<List<BlogPost>> GetAllBlogPostsAsync()
         {
             List<BlogPost> blogPosts = await _context.BlogPosts
-                                                 .Where(b => b.IsDeleted == false)
+                                                 .Where(b => b.IsDeleted == false && b.IsPublished == true)
                                                  .Include(b => b.Comments)
                                                     .ThenInclude(b => b.Author)
                                                  .Include(b => b.Category)

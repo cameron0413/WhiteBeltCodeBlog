@@ -1,6 +1,9 @@
-﻿@model IEnumerable<WhiteBeltCodeBlog.Models.BlogPost>
-@using WhiteBeltCodeBlog.Enums
-@using WhiteBeltCodeBlog.Services.Interfaces
+﻿@model IPagedList<BlogPost>
+@using WhiteBeltCodeBlog.Enums;
+@using WhiteBeltCodeBlog.Services.Interfaces;
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
 @inject IImageService _ImageService
 @inject IBlogPostService _BlogPostService
 
@@ -67,7 +70,7 @@
                                 </div>
                             </div>
                             <h4 class="title">
-                                <a href="post-details.html">
+                                <a asp-controller="Content" asp-action="@blogPost.Slug">
                                     @blogPost.Title
                                 </a>
                             </h4>
@@ -127,13 +130,13 @@
                                 <!-- Start Single Post  -->
                                 <div class="content-block post-medium mb--20">
                                     <div class="post-thumbnail">
-                                        <a href="post-details.html">
+                                        <a asp-controller="Content" asp-action="@item.Slug">
                                             <img class="img-fluid" src="@_ImageService.ConvertByteArrayToFile(item.ImageData!,item.ImageType!,(int)DefaultImage.BlogPost)" alt="Post Images">
                                         </a>
                                     </div>
                                     <div class="post-content">
                                         <h6 class="title">
-                                            <a href="post-details.html">
+                                            <a asp-controller="Content" asp-action="@item.Slug">
                                                 @item.Abstract
                                             </a>
                                         </h6>
