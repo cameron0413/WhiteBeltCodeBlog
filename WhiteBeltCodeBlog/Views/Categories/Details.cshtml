@@ -1,7 +1,8 @@
 ﻿@*This is the Categories/Details*@
 
 
-@model WhiteBeltCodeBlog.Models.Category
+@model IPagedList<BlogPost>
+
 @using WhiteBeltCodeBlog.Enums
 @using WhiteBeltCodeBlog.Services.Interfaces
 @using WhiteBeltCodeBlog.Services
@@ -17,6 +18,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    Category category = Model.FirstOrDefault()!.Category!;
 }
 
 @*<h1>Details</h1>
@@ -192,15 +194,15 @@
                             <div class="media">
                                 <div class="thumbnail">
                                     <a href="#">
-                                        <img class="img-fluid" src="@_ImageService.ConvertByteArrayToFile(Model.ImageData!,Model.ImageType!,(int)DefaultImage.Category)" alt="Post Images">
+                                        <img class="img-fluid" src="@_ImageService.ConvertByteArrayToFile(category.ImageData!,category.ImageType!,(int)DefaultImage.Category)" alt="Post Images">
                                     </a>
                                 </div>
                                 <div class="media-body">
                                     <div class="author-info">
-                                        <h1 class="title"><a href="#">@Model.Name</a></h1>
+                                        <h1 class="title"><a href="#">@category.Name</a></h1>
                                     </div>
                                     <div class="content">
-                                        <p class="b1 description">@Model.Description</p>
+                                        <p class="b1 description">@category.Description</p>
                                         <ul class="social-share-transparent size-md">
                                             <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
                                         </ul>
@@ -219,12 +221,12 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="page-title">
-                            <h2 class="title mb--40">Articles About @Model.Name</h2>
+                            <h2 class="title mb--40">Articles About @category.Name</h2>
                         </div>
                     </div>
                     <div class="col-lg-8 col-xl-8">
                         <!-- Start Post List  -->
-                        @foreach (var blogPost in await _BlogPostService.GetBlogPostsInCategoryAsync(@Model.Id))
+                        @foreach (var blogPost in Model)
                         {
                             <!-- Start Post List  -->
                             <div class="content-block post-list-view mt--30">
@@ -277,10 +279,10 @@
                         <!-- End Post List  -->
                         <div class="row row-cols-1 g-5">
                             <div class="col text-center">
-                                Page @(Model.BlogPosts.ToPagedList().PageCount < Model.BlogPosts.ToPagedList().PageNumber ? 0 : Model.BlogPosts.ToPagedList().PageNumber) of @Model.BlogPosts.ToPagedList().PageCount
+                                Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
                             </div>
                             <div class="col justify-content-center">
-                                @Html.PagedListPager(Model.BlogPosts.ToPagedList(), pageNum => Url.Action("Details", new { searchTerm = ViewBag.searchTerm, pageNum }),
+                                @Html.PagedListPager(Model, pageNum => Url.Action("Details", new { category.Id, pageNum }),
                                 new PagedListRenderOptions
                                 {
                                 LiElementClasses = new string[] { "page-item" },
@@ -296,13 +298,13 @@
                             <!-- Start Single Widget  -->
                             <div class="axil-single-widget widget widget_categories mb--30">
                                 <ul>
-                                    @foreach (Category category in (await _BlogPostService.GetCategoriesAsync()).Take(4)) // The .Take(4) method makes it return up to four categories
+                                    @foreach (Category categoryMade in (await _BlogPostService.GetCategoriesAsync()).Take(4)) // The .Take(4) method makes it return up to four categories
                                     {
 
                                         <li class="cat-item">
-                                            <a asp-controller="Categories" asp-action="Details" asp-route-id="@category.Id" class="inner">
+                                            <a asp-controller="Categories" asp-action="Details" asp-route-id="@categoryMade.Id" class="inner">
                                                 <div class="content">
-                                                    <h5 class="title">@category.Name</h5>
+                                                    <h5 class="title">@categoryMade.Name</h5>
                                                 </div>
                                             </a>
                                         </li>

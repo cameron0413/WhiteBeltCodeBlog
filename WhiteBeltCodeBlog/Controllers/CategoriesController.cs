@@ -55,17 +55,7 @@ namespace WhiteBeltCodeBlog.Controllers
             IEnumerable<BlogPost> posts = await _blogPostService.GetBlogPostsInCategoryAsync(id);
             IPagedList<BlogPost> blogPosts = await posts.ToPagedListAsync(page, pageSize);
 
-
-
-
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            return View(category);
+            return View(blogPosts);
         }
 
         // GET: Categories/Create
