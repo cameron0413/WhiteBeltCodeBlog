@@ -6,63 +6,62 @@
 
 <link rel="stylesheet" type="text/css" href="~/ckeditor5/sample/styles.css" />
 
-<h1>Create</h1>
+<div class="container p-5">
+    <h1>Create Blog Post</h1>
+    <hr />
+    <div class="container" style="align-content:center">
+        <div class="row">
+            <div class="col-md-8 align-content-center">
+                <form asp-action="Create" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Slug" class="form-control" />
+                    <input type="hidden" asp-for="Created" class="form-control" />
+                    <input type="hidden" asp-for="LastUpdated" class="form-control" />
+                    <input type="hidden" class="form-check-input" asp-for="IsPublished" />
+                    <input type="hidden" class="form-check-input" asp-for="IsDeleted" />
 
-<h4>BlogPost</h4>
-<hr />
-<div class="container">
-    <div class="row">
-        <div class="col-md-4">
-            <form asp-action="Create" enctype="multipart/form-data">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="Slug" class="form-control" />
-                <input type="hidden" asp-for="Created" class="form-control" />
-                <input type="hidden" asp-for="LastUpdated" class="form-control" />
-                <input type="hidden" class="form-check-input" asp-for="IsPublished" />
-                <input type="hidden" class="form-check-input" asp-for="IsDeleted" />
+                    <div class="form-group">
+                        <label asp-for="CategoryId" class="control-label">Category</label>
+                        <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Title" class="control-label"></label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Content" class="control-label"></label>
+                        <textarea asp-for="Content" class="form-control editor" rows="7"></textarea>
+                        <span asp-validation-for="Content" class="text-danger"></span>
+                    </div>
 
-                <div class="form-group">
-                    <label asp-for="CategoryId" class="control-label">Category</label>
-                    <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Title" class="control-label"></label>
-                    <input asp-for="Title" class="form-control" />
-                    <span asp-validation-for="Title" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Content" class="control-label"></label>
-                    <textarea asp-for="Content" class="form-control editor" rows="7"></textarea>
-                    <span asp-validation-for="Content" class="text-danger"></span>
-                </div>
+                    <div class="form-group">
+                        <label asp-for="Abstract" class="control-label"></label>
+                        <textarea asp-for="Abstract" class="form-control" rows="7"></textarea>
+                        <span asp-validation-for="Abstract" class="text-danger"></span>
+                    </div>
 
-                <div class="form-group">
-                    <label asp-for="Abstract" class="control-label"></label>
-                    <input asp-for="Abstract" class="form-control" />
-                    <span asp-validation-for="Abstract" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="BlogPostImage" class="control-label">Cover Photo</label>
-                    <input type="file" asp-for="BlogPostImage" class="form-control" accept=".png,.jpg,.jpeg,.gif" onchange="document.getElementById('imageData').src = window.URL.createObjectURL(this.files[0])" />
-                    <span asp-validation-for="BlogPostImage" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <img id="imageData" class="img-fluid img-thumbnail" style="width:100px;height:80px" src="/img/DefaultBlogImage.png" />
-                </div>
-                <div class="col-12 col-lg-6 mt-3">
-                    <label asp-for="Tags" class="form-label">Tags</label>
-                    <select name="selectedTags" class="form-select" asp-items="ViewBag.TagList" multiple aria-label="Tags">
-                    </select>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-primary" />
-                </div>
-            </form>
+                    <div class="form-group">
+                        <label asp-for="BlogPostImage" class="control-label">Cover Photo</label>
+                        <input type="file" asp-for="BlogPostImage" class="form-control" accept=".png,.jpg,.jpeg,.gif" onchange="document.getElementById('imageData').src = window.URL.createObjectURL(this.files[0])" />
+                        <span asp-validation-for="BlogPostImage" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <img id="imageData" class="img-fluid img-thumbnail" style="width:100px;height:80px" src="/img/DefaultBlogImage.png" />
+                    </div>
+                    <div class="col-12 col-lg-6 mt-3">
+                        <label asp-for="Tags" class="form-label">Tags</label>
+                        <select name="selectedTags" class="form-select" asp-items="ViewBag.TagList" multiple aria-label="Tags">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
-
 <div>
     <a asp-action="Index">Back to List</a>
 </div>

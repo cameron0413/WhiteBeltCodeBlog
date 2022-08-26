@@ -11,6 +11,9 @@
 @using WhiteBeltCodeBlog.Services
 
 @using Microsoft.AspNetCore.Identity
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common
 @inject IImageService _ImageService
 @inject IBlogPostService _BlogPostService
 
@@ -18,10 +21,7 @@
 
 @{
     ViewData["Title"] = "Details";
-}
-
-@{
-    ViewData["Title"] = "Details";
+    IPagedList<BlogPost> blogPosts = await (await _BlogPostService.GetPagedListBlogPostsWithTagAsync(Model.Id)).ToPagedListAsync(1, 4);
 }
 
 @*<h1>Details</h1>
@@ -225,7 +225,7 @@
                     </div>
                     <div class="col-lg-8 col-xl-8">
                         <!-- Start Post List  -->
-                        @foreach (var blogPost in await _BlogPostService.GetBlogPostsWithTagAsync(@Model.Id, 5))
+                        @foreach (var blogPost in blogPosts)
                         {
                             <!-- Start Post List  -->
                             <div class="content-block post-list-view mt--30">
@@ -275,6 +275,19 @@
                             <!-- End Post List  -->
                         }
                         <!-- End Post List  -->
+                        <div class="row row-cols-1 g-5">
+                            <div class="col text-center">
+                                Page @(blogPosts.PageCount < blogPosts.PageNumber ? 0 : blogPosts.PageNumber) of @blogPosts.PageCount
+                            </div>
+                            <div class="col justify-content-center">
+                                @Html.PagedListPager(blogPosts, pageNum => Url.Action("Details", new { Model.Id, pageNum }),
+                                new PagedListRenderOptions
+                                {
+                                LiElementClasses = new string[] { "page-item" },
+                                PageClasses = new string[] { "page-link" }
+                                })
+                            </div>
+                        </div>
 
                     </div>
                     <div class="col-lg-4 col-xl-4 mt_md--40 mt_sm--40">

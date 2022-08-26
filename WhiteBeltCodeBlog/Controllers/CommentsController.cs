@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WhiteBeltCodeBlog.Data;
+using WhiteBeltCodeBlog.Extensions;
 using WhiteBeltCodeBlog.Models;
 using WhiteBeltCodeBlog.Services.Interfaces;
 
@@ -64,7 +65,7 @@ namespace WhiteBeltCodeBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,BlogPostId,Body")] Comment comment, string? slug)
+        public async Task<IActionResult> Create([Bind("Id,BlogPostId,Body,Created")] Comment comment, string? slug)
         {
             ModelState.Remove("AuthorId");
 
@@ -112,8 +113,11 @@ namespace WhiteBeltCodeBlog.Controllers
 
             if (ModelState.IsValid)
             {
+
                 try
                 {
+                    comment.Created = DateTime.SpecifyKind(comment.Created, DateTimeKind.Utc);
+                    comment.LastUpdated = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
                     _context.Update(comment);
                     await _context.SaveChangesAsync();
                 }
@@ -128,7 +132,7 @@ namespace WhiteBeltCodeBlog.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("AuthorPage", "Home");
             }
             ViewData["AuthorId"] = new SelectList(_context.Users, "Id", "Id", comment.AuthorId);
             ViewData["BlogPostId"] = new SelectList(_context.BlogPosts, "Id", "Content", comment.BlogPostId);

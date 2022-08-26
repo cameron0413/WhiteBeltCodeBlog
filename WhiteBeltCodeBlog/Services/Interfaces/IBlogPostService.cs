@@ -23,6 +23,7 @@ namespace WhiteBeltCodeBlog.Services.Interfaces
         public Task<List<BlogPost>> GetBlogPostsInCategoryAsync(int categoryId);
         public Task<List<BlogPost>> GetBlogPostsWithTagAsync(int tagId, int count);
         public Task<IPagedList<BlogPost>> GetPagedListBlogPostsInCategoryAsync(int categoryId, int? pageNum);
+        public Task<List<BlogPost>> GetPagedListBlogPostsWithTagAsync(int tagId);
 
 
     }

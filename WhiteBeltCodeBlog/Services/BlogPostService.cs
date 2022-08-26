@@ -276,6 +276,28 @@ namespace WhiteBeltCodeBlog.Services
             }
         }
 
+        public async Task<List<BlogPost>> GetPagedListBlogPostsWithTagAsync(int tagId)
+        {
+            try
+            {
+                List<BlogPost> blogPosts = await _context.BlogPosts
+                                                 .Where(b => b.IsDeleted == false && b.Tags.Any(t => t.Id == tagId))
+                                                 .Include(b => b.Comments)
+                                                    .ThenInclude(b => b.Author)
+                                                 .Include(b => b.Category)
+                                                 .Include(b => b.Tags)
+                                                 .OrderByDescending(b => b.Created)
+                                                 .ToListAsync();
+
+                return blogPosts;
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+
 
 
         ///////////////////////////         Below are the commented-out methods that return lists               //////////////////////////////
