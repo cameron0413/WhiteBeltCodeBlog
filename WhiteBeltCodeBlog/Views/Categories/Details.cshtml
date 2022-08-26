@@ -5,16 +5,15 @@
 @using WhiteBeltCodeBlog.Enums
 @using WhiteBeltCodeBlog.Services.Interfaces
 @using WhiteBeltCodeBlog.Services
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
 
 @using Microsoft.AspNetCore.Identity
 @inject IImageService _ImageService
 @inject IBlogPostService _BlogPostService
 
 @inject SignInManager<BlogUser> _SignInManager
-
-@{
-    ViewData["Title"] = "Details";
-}
 
 @{
     ViewData["Title"] = "Details";
@@ -113,7 +112,7 @@
                 </li>
             </ul>
         </div>
-        
+
         <!-- Start Mobile Menu Area  -->
         <div class="popup-mobilemenu-area">
             <div class="inner">
@@ -225,7 +224,7 @@
                     </div>
                     <div class="col-lg-8 col-xl-8">
                         <!-- Start Post List  -->
-                        @foreach (var blogPost in await _BlogPostService.GetBlogPostsInCategoryAsync(@Model.Id, 5))
+                        @foreach (var blogPost in await _BlogPostService.GetBlogPostsInCategoryAsync(@Model.Id))
                         {
                             <!-- Start Post List  -->
                             <div class="content-block post-list-view mt--30">
@@ -246,7 +245,7 @@
                                         </div>
                                     </div>
                                     <h4 class="title">
-                                        <a href="post-details.html">
+                                        <a asp-controller="Content" asp-action="@blogPost.Slug">
                                             @blogPost.Title
                                         </a>
                                     </h4>
@@ -274,8 +273,21 @@
                             </div>
                             <!-- End Post List  -->
                         }
-                        <!-- End Post List  -->
 
+                        <!-- End Post List  -->
+                        <div class="row row-cols-1 g-5">
+                            <div class="col text-center">
+                                Page @(Model.BlogPosts.ToPagedList().PageCount < Model.BlogPosts.ToPagedList().PageNumber ? 0 : Model.BlogPosts.ToPagedList().PageNumber) of @Model.BlogPosts.ToPagedList().PageCount
+                            </div>
+                            <div class="col justify-content-center">
+                                @Html.PagedListPager(Model.BlogPosts.ToPagedList(), pageNum => Url.Action("Details", new { searchTerm = ViewBag.searchTerm, pageNum }),
+                                new PagedListRenderOptions
+                                {
+                                LiElementClasses = new string[] { "page-item" },
+                                PageClasses = new string[] { "page-link" }
+                                })
+                            </div>
+                        </div>
                     </div>
                     <div class="col-lg-4 col-xl-4 mt_md--40 mt_sm--40">
                         <!-- Start Sidebar Area  -->

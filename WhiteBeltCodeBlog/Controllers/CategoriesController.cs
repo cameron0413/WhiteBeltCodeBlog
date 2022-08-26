@@ -10,6 +10,7 @@ using WhiteBeltCodeBlog.Data;
 using WhiteBeltCodeBlog.Models;
 using WhiteBeltCodeBlog.Services;
 using WhiteBeltCodeBlog.Services.Interfaces;
+using X.PagedList;
 
 namespace WhiteBeltCodeBlog.Controllers
 {
@@ -18,14 +19,17 @@ namespace WhiteBeltCodeBlog.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IImageService _imageService;
         private readonly UserManager<BlogUser> _userManager;
+        private readonly IBlogPostService _blogPostService;
 
         public CategoriesController(ApplicationDbContext context,
                                     IImageService imageService,
-                                    UserManager<BlogUser> userManager)
+                                    UserManager<BlogUser> userManager,
+                                    IBlogPostService blogPostService)
         {
             _context = context;
             _imageService = imageService;
             _userManager = userManager;
+            _blogPostService = blogPostService;
         }
 
         // GET: Categories
@@ -37,12 +41,22 @@ namespace WhiteBeltCodeBlog.Controllers
         }
 
         // GET: Categories/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id, int? pageNum)
         {
+            int pageSize = 4;
+            int page = pageNum ?? 1; //The double question mark is a null-coalescing operator
+
             if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
+
+
+            IEnumerable<BlogPost> posts = await _blogPostService.GetBlogPostsInCategoryAsync(id);
+            IPagedList<BlogPost> blogPosts = await posts.ToPagedListAsync(page, pageSize);
+
+
+
 
             var category = await _context.Categories
                 .FirstOrDefaultAsync(m => m.Id == id);

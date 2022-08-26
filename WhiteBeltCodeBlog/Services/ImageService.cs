@@ -16,7 +16,7 @@ namespace WhiteBeltCodeBlog.Services
 
 
 
-            if (fileData.Length == 0 || fileData == null)
+            if (fileData == null || fileData.Length == 0)
             {
                 switch (imageType)
                 {

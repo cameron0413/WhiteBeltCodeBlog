@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -19,13 +20,13 @@ namespace WhiteBeltCodeBlog.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
         private readonly IBlogPostService _blogPostService;
-        private readonly IEmailService _emailService;
+        private readonly IEmailSender _emailService;
         private readonly UserManager<BlogUser> _userManager;
 
         public HomeController(ILogger<HomeController> logger,
                               ApplicationDbContext context,
                               IBlogPostService blogPostService,
-                              IEmailService emailService,
+                              IEmailSender emailService,
                               UserManager<BlogUser> userManager)
         {
             _logger = logger;
@@ -43,7 +44,7 @@ namespace WhiteBeltCodeBlog.Controllers
             int page = pageNum ?? 1; //The double question mark is a null-coalescing operator
 
             IEnumerable<BlogPost> posts = await _blogPostService.GetAllBlogPostsAsync();
-            IPagedList<BlogPost> blogPosts =await  posts.ToPagedListAsync(page, pageSize);
+            IPagedList<BlogPost> blogPosts = await posts.ToPagedListAsync(page, pageSize);
 
 
             return View(blogPosts);

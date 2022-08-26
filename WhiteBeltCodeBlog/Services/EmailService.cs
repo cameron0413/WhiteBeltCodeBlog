@@ -4,10 +4,11 @@ using WhiteBeltCodeBlog.Services.Interfaces;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace WhiteBeltCodeBlog.Services
 {
-    public class EmailService : IEmailService
+    public class EmailService : IEmailSender
     {
         private readonly MailSettings _mailSettings;
 

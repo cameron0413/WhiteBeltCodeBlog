@@ -4,6 +4,7 @@ using WhiteBeltCodeBlog.Models;
 using Microsoft.EntityFrameworkCore;
 using WhiteBeltCodeBlog.Data;
 using WhiteBeltCodeBlog.Extensions;
+using X.PagedList;
 
 namespace WhiteBeltCodeBlog.Services
 {
@@ -202,7 +203,7 @@ namespace WhiteBeltCodeBlog.Services
             }
         }
 
-        public async Task<List<BlogPost>> GetBlogPostsInCategoryAsync(int categoryId, int count)
+        public async Task<List<BlogPost>> GetBlogPostsInCategoryAsync(int categoryId)
         {
             try
             {
@@ -213,8 +214,35 @@ namespace WhiteBeltCodeBlog.Services
                                                  .Include(b => b.Category)
                                                  .Include(b => b.Tags)
                                                  .OrderByDescending(b => b.Created)
-                                                 .Take(count)
                                                  .ToListAsync();
+
+                return blogPosts;
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<IPagedList<BlogPost>> GetPagedListBlogPostsInCategoryAsync(int categoryId, int? pageNum)
+        {
+            try
+            {
+                List<BlogPost> posts = await _context.BlogPosts
+                                                 .Where(b => b.IsDeleted == false && b.CategoryId == categoryId)
+                                                 .Include(b => b.Comments)
+                                                    .ThenInclude(b => b.Author)
+                                                 .Include(b => b.Category)
+                                                 .Include(b => b.Tags)
+                                                 .OrderByDescending(b => b.Created)
+                                                 .ToListAsync();
+
+                int pageSize = 4;
+                int page = pageNum ?? 1; //The double question mark is a null-coalescing operator
+
+
+                IPagedList<BlogPost> blogPosts = await posts.ToPagedListAsync(page, pageSize);
 
                 return blogPosts;
             }
