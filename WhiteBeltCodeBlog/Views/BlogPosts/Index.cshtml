@@ -56,7 +56,9 @@
                         @Html.DisplayFor(modelItem => item.Title)
                     </td>
                     <td>
-                        @Html.Raw(item.Content)
+                        <div class="tableData">
+                            @Html.Raw(item.Content)
+                        </div>
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Created)

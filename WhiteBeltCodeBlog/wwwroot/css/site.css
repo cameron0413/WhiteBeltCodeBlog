@@ -16,3 +16,24 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+th {
+    word-wrap: break-word;
+    max-width: 150px;
+    max-height: 150px;
+    overflow: hidden;
+}
+
+td {
+    word-wrap: break-word;
+    overflow: hidden;
+    max-width: 150px;
+    max-height: 300px;
+}
+
+.tableData {
+    word-wrap: break-word;
+    overflow: hidden;
+    max-width: 150px;
+    max-height: 300px;
+}
