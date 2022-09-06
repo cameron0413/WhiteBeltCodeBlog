@@ -73,7 +73,7 @@
                         <img class="img-fluid" src="@_ImageService.ConvertByteArrayToFile(item.ImageData!,item.ImageType!,(int)DefaultImage.BlogPost)" alt="Post Images">
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Category.Name)
+                        @Html.DisplayFor(modelItem => item.Category!.Name)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Tags)
