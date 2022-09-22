@@ -408,7 +408,7 @@
                             <div class="post-content">
                                 <div class="post-cat">
                                     <div class="post-cat-list">
-                                        <a href="#">@Model.Category</a>
+                                        <a href="#">@Model.Category.Name</a>
                                     </div>
                                 </div>
                                 <h5 class="title">
@@ -451,7 +451,12 @@
     <script src="assets/js/main.js"></script>
 </body>
 
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>  
+
+    }
     <a asp-action="Index">Back to List</a>
 </div>
